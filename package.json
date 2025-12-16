@@ -1,0 +1,42 @@
+{
+  "name": "resume-optimizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@mantine/core": "^8.3.10",
+    "@mantine/form": "^8.3.10",
+    "@mantine/hooks": "^8.3.10",
+    "@mantine/tiptap": "^8.3.10",
+    "@tabler/icons-react": "^3.36.0",
+    "@tanstack/ai": "^0.0.3",
+    "@tanstack/ai-ollama": "^0.0.3",
+    "@tanstack/react-form": "^1.27.4",
+    "@tanstack/react-router": "^1.141.2",
+    "@tanstack/react-start": "^1.141.3",
+    "@tiptap/extension-link": "^3.13.0",
+    "@tiptap/pm": "^3.13.0",
+    "@tiptap/react": "^3.13.0",
+    "@tiptap/starter-kit": "^3.13.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@vitejs/plugin-react": "^5.1.2",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.18.0",
+    "postcss-simple-vars": "^7.0.1",
+    "vite": "^7.3.0",
+    "vite-tsconfig-paths": "^6.0.1"
+  }
+}
