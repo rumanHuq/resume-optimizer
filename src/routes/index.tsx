@@ -1,10 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useForm } from '@tanstack/react-form';
-import { analyzeResumeServerFn } from '../resumeLoaders'
-import { FileInput, TextInput } from '@mantine/core'
+import { Button, Center, FileInput, TextInput } from '@mantine/core';
 import { IconFileCv, IconLink, IconSparkles } from '@tabler/icons-react';
-import { Center, Button } from '@mantine/core';
-import { FormEvent } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { createFileRoute } from '@tanstack/react-router';
+import { FormEvent, useState } from 'react';
+import { analyzeResumeServerFn } from '../resumeLoaders';
 import { resumeAnalyzerformSchema, ResumeAnalyzerformSchema } from '../schemas/schemas';
 
 export const Route = createFileRoute('/')({
@@ -19,17 +18,17 @@ const defaultFormValues: ResumeAnalyzerformSchema = {
 
 
 function Home() {
+  const [stream, setStream] = useState("")
   const cvForm = useForm({
     defaultValues: defaultFormValues,
     async onSubmit({ value }) {
       const { linkedJobUrl, resumePDF } = resumeAnalyzerformSchema.parse(value)
       const formData = new FormData();
-      formData.append('resumePDF', value.resumePDF);
-      formData.append('linkedJobUrl', value.linkedJobUrl);
+      formData.append('resumePDF', resumePDF);
+      formData.append('linkedJobUrl', linkedJobUrl);
 
       const result = await analyzeResumeServerFn({ data: formData })
-      console.log(result)
-      // cvForm.reset(defaultFormValues);
+      setStream(result)
     },
   })
 
@@ -73,6 +72,7 @@ function Home() {
         >
           {cvForm.state.isSubmitting ? 'Analyzing...' : 'Get ATS Score'}
         </Button>
+        {stream && <div>{JSON.stringify(stream, null, 2)}</div>}
       </form>
     </Center>
   )

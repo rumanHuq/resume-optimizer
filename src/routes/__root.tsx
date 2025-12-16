@@ -1,12 +1,15 @@
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
-import type { ReactNode } from 'react'
+import { TanStackDevtools } from '@tanstack/react-devtools';
 import {
-  Outlet,
   createRootRoute,
   HeadContent,
+  Outlet,
   Scripts,
-} from '@tanstack/react-router'
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+} from '@tanstack/react-router';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
+import type { ReactNode } from 'react';
+import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -35,6 +38,18 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         <MantineProvider>{children}</MantineProvider>
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
         <Scripts />
       </body>
     </html>
