@@ -1,13 +1,14 @@
-import pdf2md from '@opendocsg/pdf2md';
-import { createServerFn } from "@tanstack/react-start";
-import { Buffer } from "node:buffer";
-import z from "zod";
-import { resumeAnalyzerformSchema } from "./schemas/schemas";
+import { Buffer } from 'node:buffer';
 
-async function fileToBase64(file: File){
+import pdf2md from '@opendocsg/pdf2md';
+import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
+
+import { resumeAnalyzerformSchema } from '../../schemas/schemas';
+
+async function fileToBase64(file: File) {
   const arrayBuffer = await file.arrayBuffer();
   return Buffer.from(arrayBuffer);
-
 }
 
 // async function generateResponse() {
@@ -41,23 +42,23 @@ async function fileToBase64(file: File){
 //   })
 // }
 
-export const analyzeResumeServerFn = createServerFn({ method: "POST" })
-  .inputValidator(r => {
-    const formData = z.instanceof(FormData).parse(r)
+export const analyzeResumeServerFn = createServerFn({ method: 'POST' })
+  .inputValidator((r) => {
+    const formData = z.instanceof(FormData).parse(r);
     return resumeAnalyzerformSchema.parse({
       resumePDF: formData.get('resumePDF'),
-      linkedJobUrl: formData.get('linkedJobUrl')
-    })
+      linkedJobUrl: formData.get('linkedJobUrl'),
+    });
   })
   .handler(async ({ data }) => {
     try {
       const pdfBase64 = await fileToBase64(data.resumePDF);
       // const promisedBuffer = promisify(new PdfReader().parseBuffer)
       // const pdf = await promisedBuffer(pdfBase64)
-      const resumeMarkdown = await pdf2md(pdfBase64)
-      return resumeMarkdown
+      const resumeMarkdown = await pdf2md(pdfBase64);
+      return resumeMarkdown;
     } catch (error) {
-      console.log(error)
-      return "nooo"
+      console.log(error);
+      return 'nooo';
     }
-  })
+  });
