@@ -8,10 +8,18 @@ import { analyzeResumeServerFn } from '@/containers/HomePage/resumeLoaders';
 import type { ResumeAnalyzerformSchema } from '@/schemas/schemas';
 import { resumeAnalyzerformSchema } from '@/schemas/schemas';
 
-const defaultFormValues: ResumeAnalyzerformSchema = { resumePDF: new File([], ''), linkedJobUrl: '' };
+const defaultFormValues: ResumeAnalyzerformSchema = {
+  resumePDF: new File([], ''),
+  linkedJobUrl: '',
+};
+
+interface Stream {
+  resumeMarkdown: string;
+  linkedInJobPageMarkdown: string;
+}
 
 export const HomePage = () => {
-  const [stream, setStream] = useState('');
+  const [stream, setStream] = useState<string | Stream>('');
   const cvForm = useForm({
     defaultValues: defaultFormValues,
     async onSubmit({ value }) {
@@ -73,7 +81,13 @@ export const HomePage = () => {
         >
           {cvForm.state.isSubmitting ? 'Analyzing...' : 'Get ATS Score'}
         </Button>
-        {stream.length > 0 && <div>{JSON.stringify(stream, null, 2)}</div>}
+        {typeof stream === 'string' ? (
+          <p>{stream}</p>
+        ) : (
+          <div style={{ width: '100vw' }}>
+            <pre>{JSON.stringify(stream, null, 2)}</pre>
+          </div>
+        )}
       </form>
     </Center>
   );

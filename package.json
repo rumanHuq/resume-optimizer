@@ -33,10 +33,12 @@
     "@tiptap/pm": "^3.13.0",
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",
+    "cheerio": "^1.1.2",
     "pdf-parse": "^2.4.5",
     "pdfreader": "^3.0.8",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "turndown": "^7.2.2",
     "zod": "^4.2.1"
   },
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.0",
+    "@types/turndown": "^5.0.6",
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
