@@ -12,11 +12,7 @@ export const HomePage = () => {
     isLoading,
     object: resumeFeedback,
     submit,
-  } = useObject({
-    api: '/api/resume-optimizer',
-    schema: jobSuitabilitySchema,
-    // transport: new DefaultChatTransport({ api: '/api/resume-optimizer' }),
-  });
+  } = useObject({ api: '/api/resume-optimizer', schema: jobSuitabilitySchema });
   const cvForm = useForm({
     defaultValues: defaultFormValues,
     onSubmit({ value }) {
