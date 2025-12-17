@@ -1,4 +1,9 @@
+import { SYSTEM_PROMPT } from '@/constants/constants';
+import { jobSuitabilitySchema } from '@/schemas/schemas';
+import { streamObject } from 'ai';
 import * as cheerio from 'cheerio';
+import { ollama } from 'ollama-ai-provider-v2';
+import TurndownService from 'turndown';
 
 const ALLOWED_HOSTS = new Set(['www.linkedin.com', 'linkedin.com']);
 
@@ -12,12 +17,12 @@ export function getJobId(link: string) {
   return jobId;
 }
 
-export function getLinkedInApiLink(link: string) {
+function getLinkedInApiLink(link: string) {
   const jobId = getJobId(link)!;
   return `https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/${jobId}`;
 }
 
-export async function parseLinkedinJobPostToMarkdown(linkedInLink: string) {
+async function parseLinkedinJobPostToMarkdown(linkedInLink: string) {
   const html = await fetch(linkedInLink, {
     headers: {
       'User-Agent':
@@ -30,3 +35,35 @@ export async function parseLinkedinJobPostToMarkdown(linkedInLink: string) {
   if (jobTitle === null || jobDescription === null) return null;
   return `<h2>${jobTitle}</h2>`.concat(jobDescription);
 }
+
+export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
+  const turndownService = new TurndownService();
+  const linkedInAPILink = getLinkedInApiLink(linkedInJobUrl);
+  const linkedInJobPageHtml = await parseLinkedinJobPostToMarkdown(linkedInAPILink);
+  if (linkedInJobPageHtml === null) return 'No html found';
+
+  const linkedInJobPageMarkdown: string = turndownService.turndown(linkedInJobPageHtml);
+
+  return linkedInJobPageMarkdown;
+}
+
+export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: string) => {
+  const userPrompt = `
+Job Advertisement:
+${linkedInJobPageMarkdown}
+
+Candidate CV:
+${resumeMarkDown}
+`;
+
+  const resp = streamObject({
+    model: ollama('qwen3:8b'),
+    schema: jobSuitabilitySchema,
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      { role: 'user', content: userPrompt },
+    ],
+  });
+
+  return resp.toTextStreamResponse();
+};

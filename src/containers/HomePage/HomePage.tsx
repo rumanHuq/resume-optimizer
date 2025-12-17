@@ -1,35 +1,27 @@
+import { jobSuitabilitySchema, resumeAnalyzerformSchema } from '@/schemas/schemas';
+import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { Button, Center, FileInput, TextInput } from '@mantine/core';
 import { IconFileCv, IconLink, IconSparkles } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import type { FormEvent } from 'react';
-import { useState } from 'react';
-
-import { analyzeResumeServerFn } from '@/containers/HomePage/resumeLoaders';
-import type { ResumeAnalyzerformSchema } from '@/schemas/schemas';
-import { resumeAnalyzerformSchema } from '@/schemas/schemas';
-
-const defaultFormValues: ResumeAnalyzerformSchema = {
-  resumePDF: new File([], ''),
-  linkedJobUrl: '',
-};
-
-interface Stream {
-  resumeMarkdown: string;
-  linkedInJobPageMarkdown: string;
-}
+import { StreamResponse } from './StreamResponse';
+import { defaultFormValues, onPdfUpload } from './utils';
 
 export const HomePage = () => {
-  const [stream, setStream] = useState<string | Stream>('');
+  const {
+    isLoading,
+    object: resumeFeedback,
+    submit,
+  } = useObject({
+    api: '/api/resume-optimizer',
+    schema: jobSuitabilitySchema,
+    // transport: new DefaultChatTransport({ api: '/api/resume-optimizer' }),
+  });
   const cvForm = useForm({
     defaultValues: defaultFormValues,
-    async onSubmit({ value }) {
-      const { linkedJobUrl, resumePDF } = resumeAnalyzerformSchema.parse(value);
-      const formData = new FormData();
-      formData.append('resumePDF', resumePDF);
-      formData.append('linkedJobUrl', linkedJobUrl);
-
-      const result = await analyzeResumeServerFn({ data: formData });
-      setStream(result);
+    onSubmit({ value }) {
+      const { linkedJobUrl } = resumeAnalyzerformSchema.parse(value);
+      void submit({ linkedInUrl: linkedJobUrl });
     },
   });
 
@@ -40,7 +32,11 @@ export const HomePage = () => {
   };
 
   return (
-    <Center h={'100vh'}>
+    <Center h={'100vh'} style={{ flexDirection: 'column' }}>
+      {resumeFeedback && 'overallSuitabilityReason' in resumeFeedback && (
+        /* @ts-expect-error */
+        <StreamResponse jobSuitability={resumeFeedback} />
+      )}
       <form onSubmit={onFormSubmit}>
         <cvForm.Field
           name='resumePDF'
@@ -51,7 +47,13 @@ export const HomePage = () => {
               placeholder='my-resume.pdf'
               rightSection={<IconFileCv size={18} stroke={1.5} />}
               rightSectionPointerEvents='none'
-              onChange={(file) => file && field.handleChange(file)}
+              onChange={(file) => {
+                if (!file) return;
+                field.handleChange(file);
+                const formData = new FormData();
+                formData.append('resumePDF', file);
+                void onPdfUpload({ data: formData });
+              }}
             />
           )}
         />
@@ -74,20 +76,13 @@ export const HomePage = () => {
           type='submit'
           variant='gradient'
           gradient={{ from: 'red', to: 'blue', deg: 90 }}
-          disabled={cvForm.state.isSubmitting}
+          disabled={cvForm.state.isSubmitting || isLoading}
           mt={16}
           w={'100%'}
           rightSection={<IconSparkles size={18} stroke={1.5} />}
         >
-          {cvForm.state.isSubmitting ? 'Analyzing...' : 'Get ATS Score'}
+          {cvForm.state.isSubmitting || isLoading ? 'Analyzing...' : 'Get ATS Score'}
         </Button>
-        {typeof stream === 'string' ? (
-          <p>{stream}</p>
-        ) : (
-          <div style={{ width: '100vw' }}>
-            <pre>{JSON.stringify(stream, null, 2)}</pre>
-          </div>
-        )}
       </form>
     </Center>
   );
