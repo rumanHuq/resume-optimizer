@@ -49,7 +49,7 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
   return linkedInJobPageMarkdown;
 }
 
-const isDev = process.env.NODE_ENV !== 'production';
+export const isDev = process.env.NODE_ENV !== 'production';
 const models = [
   'nvidia/nemotron-3-nano-30b-a3b:free',
   'nex-agi/deepseek-v3.1-nex-n1:free',

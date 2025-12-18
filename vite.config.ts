@@ -5,19 +5,17 @@ import viteReact from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 
+export const isDev = process.env.NODE_ENV !== 'production';
+const developmentPlugins = () => [devtools()];
+const productionPlugins = () => [netlify()];
+
 const config = defineConfig({
   server: { port: 8080 },
   plugins: [
-    devtools(),
-    netlify({
-      dev: {
-        edgeFunctions: { enabled: false },
-        // See https://www.npmjs.com/package/@netlify/vite-plugin.
-      },
-    }),
     viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
     tanstackStart(),
     viteReact(),
+    ...(isDev ? developmentPlugins() : productionPlugins()),
   ],
 });
 
