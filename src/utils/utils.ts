@@ -49,7 +49,7 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
   return linkedInJobPageMarkdown;
 }
 
-const isProd = process.env.NODE_ENV === 'production';
+const isDev = process.env.NODE_ENV !== 'production';
 const models = [
   'nvidia/nemotron-3-nano-30b-a3b:free',
   'nex-agi/deepseek-v3.1-nex-n1:free',
@@ -62,10 +62,8 @@ const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY })
 export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: string) => {
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${resumeMarkDown}.`;
-
   const resp = streamObject({
-    // model: !isProd ? openrouter('qwen/qwen3-8b') : ollama('qwen3:8b'),
-    model: isProd ? openrouter(models[0]) : ollama('qwen3:8b'),
+    model: isDev ? ollama('qwen3:8b') : openrouter(models[0]),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

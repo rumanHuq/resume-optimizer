@@ -4,13 +4,14 @@ import { Container, Grid, Transition } from '@mantine/core';
 import { ResumeUploadForm } from './ResumeUploadForm';
 import { SuitabilityResult } from './SuitabilityResult';
 
-export const HomePage = () => {
+export const HomePage = ({ env }: { env: string }) => {
   const {
     isLoading,
     object: resultData,
     submit,
   } = useObject({ api: '/api/resume-optimizer', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
+  console.log({ env });
 
   return (
     <Container size='xl' py='xl'>
