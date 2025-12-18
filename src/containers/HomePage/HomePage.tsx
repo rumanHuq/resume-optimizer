@@ -11,8 +11,7 @@ export const HomePage = ({ env }: { env: string }) => {
     submit,
   } = useObject({ api: '/api/resume-optimizer', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
-  console.log({ env });
-
+  console.log(env);
   return (
     <Container size='xl' py='xl'>
       <Grid gutter='xl'>
