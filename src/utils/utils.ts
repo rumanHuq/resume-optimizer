@@ -64,7 +64,7 @@ export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: stri
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${resumeMarkDown}.`;
   const resp = streamObject({
-    model: !isDev ? ollama('qwen3:8b') : openrouter(models[0]),
+    model: isDev ? ollama('qwen3:8b') : openrouter(models[0]),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
