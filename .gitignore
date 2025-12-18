@@ -240,3 +240,6 @@ $RECYCLE.BIN/
 .tanstack
 dist
 dist-ssr
+
+# Local Netlify folder
+.netlify

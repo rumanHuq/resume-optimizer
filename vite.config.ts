@@ -1,3 +1,4 @@
+import netlify from '@netlify/vite-plugin-tanstack-start';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
@@ -8,7 +9,12 @@ const config = defineConfig({
   server: { port: 8080 },
   plugins: [
     devtools(),
-    // this is the plugin that enables path aliases
+    netlify({
+      dev: {
+        edgeFunctions: { enabled: false },
+        // See https://www.npmjs.com/package/@netlify/vite-plugin.
+      },
+    }),
     viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
     tanstackStart(),
     viteReact(),
