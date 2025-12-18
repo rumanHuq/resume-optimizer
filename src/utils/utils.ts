@@ -9,6 +9,7 @@ import TurndownService from 'turndown';
 const ALLOWED_HOSTS = new Set(['www.linkedin.com', 'linkedin.com']);
 
 export function getJobId(link: string) {
+  console.log(JSON.stringify({ link }, null, 2));
   const url = new URL(link);
 
   if (url.protocol !== 'https:') return null;
@@ -51,10 +52,10 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
 
 export const isDev = process.env.NODE_ENV !== 'production';
 const models = [
-  'nvidia/nemotron-3-nano-30b-a3b:free',
   'nex-agi/deepseek-v3.1-nex-n1:free',
-  'mistralai/devstral-2512:free',
   'allenai/olmo-3.1-32b-think:free',
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+  'mistralai/devstral-2512:free',
   'qwen/qwen3-235b-a22b:free',
 ];
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
@@ -63,7 +64,7 @@ export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: stri
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${resumeMarkDown}.`;
   const resp = streamObject({
-    model: isDev ? ollama('qwen3:8b') : openrouter(models[0]),
+    model: !isDev ? ollama('qwen3:8b') : openrouter(models[0]),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
