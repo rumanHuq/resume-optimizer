@@ -19,6 +19,7 @@
     "@mantine/hooks": "^8.3.10",
     "@mantine/tiptap": "^8.3.10",
     "@opendocsg/pdf2md": "^0.2.2",
+    "@openrouter/ai-sdk-provider": "^1.5.4",
     "@tabler/icons-react": "^3.36.0",
     "@tanstack/ai-react": "^0.0.3",
     "@tanstack/react-devtools": "^0.8.4",

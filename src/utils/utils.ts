@@ -1,5 +1,6 @@
 import { SYSTEM_PROMPT } from '@/constants/constants';
 import { jobSuitabilitySchema } from '@/schemas/schemas';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamObject } from 'ai';
 import * as cheerio from 'cheerio';
 import { ollama } from 'ollama-ai-provider-v2';
@@ -48,17 +49,33 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
   return linkedInJobPageMarkdown;
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+const models = [
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+  'nex-agi/deepseek-v3.1-nex-n1:free',
+  'mistralai/devstral-2512:free',
+  'allenai/olmo-3.1-32b-think:free',
+  'qwen/qwen3-235b-a22b:free',
+];
+const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
+
 export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: string) => {
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${resumeMarkDown}.`;
 
   const resp = streamObject({
-    model: ollama('qwen3:8b'),
+    // model: !isProd ? openrouter('qwen/qwen3-8b') : ollama('qwen3:8b'),
+    model: isProd ? openrouter(models[0]) : ollama('qwen3:8b'),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
       { role: 'user', content: userPrompt },
     ],
+    onError(event) {
+      console.log(event.error);
+      new Response('Oh no');
+    },
+    providerOptions: { gateway: { models } },
   });
 
   return resp.toTextStreamResponse();
