@@ -52,9 +52,9 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
 
 export const isDev = process.env.NODE_ENV !== 'production';
 const models = [
+  'nvidia/nemotron-3-nano-30b-a3b:free',
   'nex-agi/deepseek-v3.1-nex-n1:free',
   'allenai/olmo-3.1-32b-think:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free',
   'mistralai/devstral-2512:free',
   'qwen/qwen3-235b-a22b:free',
 ];
