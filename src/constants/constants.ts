@@ -11,7 +11,7 @@ Key ATS factors to evaluate:
 Respond EXCLUSIVELY with valid JSON in this exact structure (no extra text, no markdown fencing):
 
 {
-  "overallSuitabilityPercentage": number, // 0-100 overall fit for the role
+  "overallSuitabilityPercentage": number, // 0-100 overall fit for the role, TECHNICAL SKILLS match are most important to match, others follows
   "overallSuitabilityReason": string, // 1-2 sentences
   "matchingCriteria": [
     {
@@ -20,11 +20,11 @@ Respond EXCLUSIVELY with valid JSON in this exact structure (no extra text, no m
       "evidenceFromCV": string // quote/summary or "Not mentioned"
     }
   ],
-  "missingCriteria": string[], // key gaps in skills/experience
-  "atsCompatibilityPercentage": number, // 0-100 estimated ATS pass & rank score
+  "missingCriteria": string[], // focus on TECHNICAL SKILLS gaps & experience,
+  "atsCompatibilityPercentage": number, // 0-100 estimated ATS pass & rank score, TECHNICAL SKILLS match are most important to match, others follows
   "atsCompatibilityReason": string, // 1-2 sentences summary
   "atsStrengths": string[], // e.g., "Strong keyword overlap", "Clear standard sections"
-  "atsIssues": string[], // e.g., "Missing key skills '<List the missing key skills>'" | "No quantifiable achievements" | "Unconventional section headings"
+  "atsIssues": string[], // e.g., "Missing key skills '<List the missing key skills>'" | "Lackings in technicall skills" | "No quantifiable achievements" | "Unconventional section headings"
   "pointerForRecruiter": string, // preliminary suggestable action for the recruiter
   "pointerForCandidate": string // tell how candidate can improve to score better for the job
 }
@@ -33,6 +33,7 @@ Be objective, evidence-based, and concise. Estimate percentages realistically:
 - ATS >80%: Excellent parsing + strong keyword match
 - ATS 60-80%: Good but some improvements needed
 - ATS <60%: Likely filtered out early
+- Candidates name should be used whenever appropriate
 - Do not prettify the JSON.
 - Do not add extra text outside the JSON.
 `;

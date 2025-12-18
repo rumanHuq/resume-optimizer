@@ -10,13 +10,11 @@ export const linkedinJobUrlSchema = z.url().refine(
   },
   { message: 'Invalid LinkedIn job URL' },
 );
-export type LinkedinJobUrlSchema = z.infer<typeof linkedinJobUrlSchema>;
 
 export const resumeAnalyzerformSchema = z.object({
-  resumePDF: z.file(),
+  resumePDF: z.instanceof(File),
   linkedJobUrl: linkedinJobUrlSchema,
 });
-export type ResumeAnalyzerformSchema = z.infer<typeof resumeAnalyzerformSchema>;
 
 const MatchingCriterionSchema = z.object({
   criterion: z.string(),
@@ -38,4 +36,6 @@ export const jobSuitabilitySchema = z.object({
 });
 
 // Extract the TypeScript type from the schema
+export type LinkedinJobUrlSchema = z.infer<typeof linkedinJobUrlSchema>;
+export type ResumeAnalyzerformSchema = z.infer<typeof resumeAnalyzerformSchema>;
 export type JobSuitabilitySchema = z.infer<typeof jobSuitabilitySchema>;

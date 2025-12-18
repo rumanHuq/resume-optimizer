@@ -1,85 +1,39 @@
-import { jobSuitabilitySchema, resumeAnalyzerformSchema } from '@/schemas/schemas';
+import { jobSuitabilitySchema } from '@/schemas/schemas';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
-import { Button, Center, FileInput, TextInput } from '@mantine/core';
-import { IconFileCv, IconLink, IconSparkles } from '@tabler/icons-react';
-import { useForm } from '@tanstack/react-form';
-import type { FormEvent } from 'react';
-import { StreamResponse } from './StreamResponse';
-import { defaultFormValues, onPdfUpload } from './utils';
+import { Container, Grid, Transition } from '@mantine/core';
+import { ResumeUploadForm } from './ResumeUploadForm';
+import { SuitabilityResult } from './SuitabilityResult';
 
 export const HomePage = () => {
   const {
     isLoading,
-    object: resumeFeedback,
+    object: resultData,
     submit,
   } = useObject({ api: '/api/resume-optimizer', schema: jobSuitabilitySchema });
-  const cvForm = useForm({
-    defaultValues: defaultFormValues,
-    onSubmit({ value }) {
-      const { linkedJobUrl } = resumeAnalyzerformSchema.parse(value);
-      void submit({ linkedInUrl: linkedJobUrl });
-    },
-  });
-
-  const onFormSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    void cvForm.handleSubmit();
-  };
+  const showResults = !!resultData && Object.keys(resultData).length > 0;
 
   return (
-    <Center h={'100vh'} style={{ flexDirection: 'column' }}>
-      {resumeFeedback && 'overallSuitabilityReason' in resumeFeedback && (
-        /* @ts-expect-error */
-        <StreamResponse jobSuitability={resumeFeedback} />
-      )}
-      <form onSubmit={onFormSubmit}>
-        <cvForm.Field
-          name='resumePDF'
-          children={(field) => (
-            <FileInput
-              accept='application/pdf'
-              label='Attach your CV'
-              placeholder='my-resume.pdf'
-              rightSection={<IconFileCv size={18} stroke={1.5} />}
-              rightSectionPointerEvents='none'
-              onChange={(file) => {
-                if (!file) return;
-                field.handleChange(file);
-                const formData = new FormData();
-                formData.append('resumePDF', file);
-                void onPdfUpload({ data: formData });
-              }}
-            />
-          )}
-        />
-        <cvForm.Field
-          name='linkedJobUrl'
-          children={(field) => (
-            <TextInput
-              mt='md'
-              rightSectionPointerEvents='none'
-              rightSection={<IconLink size={16} />}
-              label='LinkedIn Job URI'
-              placeholder='http://linkedin.com/...'
-              onChange={(link) => {
-                field.handleChange(link.currentTarget.value);
-              }}
-            />
-          )}
-        />
-        <Button
-          type='submit'
-          variant='gradient'
-          gradient={{ from: 'red', to: 'blue', deg: 90 }}
-          disabled={cvForm.state.isSubmitting || isLoading}
-          mt={16}
-          w={'100%'}
-          rightSection={<IconSparkles size={18} stroke={1.5} />}
-        >
-          {cvForm.state.isSubmitting || isLoading ? 'Analyzing...' : 'Get ATS Score'}
-        </Button>
-      </form>
-    </Center>
+    <Container size='xl' py='xl'>
+      <Grid gutter='xl'>
+        {/* Left Column: Form */}
+        {/* Moves to side (span 4) when streaming starts, otherwise centered (span 6) */}
+        <Grid.Col span={{ base: 12, md: showResults ? 4 : 6 }} offset={{ md: showResults ? 0 : 3 }}>
+          <ResumeUploadForm onSubmit={submit} isLoading={isLoading} />
+        </Grid.Col>
+
+        {showResults && (
+          <Grid.Col span={{ base: 12, md: 8 }}>
+            <Transition mounted={showResults} transition='slide-left' duration={400} timingFunction='ease'>
+              {(styles) => (
+                <div style={styles}>
+                  {/* @ts-expect-error */}
+                  <SuitabilityResult data={resultData} />
+                </div>
+              )}
+            </Transition>
+          </Grid.Col>
+        )}
+      </Grid>
+    </Container>
   );
 };

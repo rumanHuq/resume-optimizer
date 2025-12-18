@@ -1,18 +1,11 @@
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import '@mantine/core/styles.css';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import type { ReactNode } from 'react';
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
 
-const RootComponent = () => {
-  return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
-  );
-};
+import '@mantine/core/styles.css';
+
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -21,27 +14,27 @@ export const Route = createRootRoute({
       { title: 'Resume Analyzer' },
     ],
   }),
-  component: RootComponent,
+  component: () => {
+    return (
+      <html {...mantineHtmlProps}>
+        <head>
+          <HeadContent />
+          <ColorSchemeScript defaultColorScheme='auto' />
+        </head>
+        <body>
+          <MantineProvider>
+            <Outlet />
+          </MantineProvider>
+          <TanStackDevtools
+            config={{ position: 'bottom-right' }}
+            plugins={[
+              { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
+              TanStackQueryDevtools,
+            ]}
+          />
+          <Scripts />
+        </body>
+      </html>
+    );
+  },
 });
-
-const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
-  return (
-    <html {...mantineHtmlProps}>
-      <head>
-        <HeadContent />
-        <ColorSchemeScript defaultColorScheme='auto' />
-      </head>
-      <body>
-        <MantineProvider>{children}</MantineProvider>
-        <TanStackDevtools
-          config={{ position: 'bottom-right' }}
-          plugins={[
-            { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
-            TanStackQueryDevtools,
-          ]}
-        />
-        <Scripts />
-      </body>
-    </html>
-  );
-};
