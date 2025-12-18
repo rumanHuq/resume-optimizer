@@ -24,3 +24,8 @@ export const onPdfUpload = createServerFn({ method: 'POST' })
     db.resumeMarkDown = resumeMarkDown;
     return new Response(resumeMarkDown);
   });
+
+export const onPdfRemove = createServerFn({ method: 'POST' }).handler(() => {
+  db.resumeMarkDown = '';
+  return new Response('file removed');
+});

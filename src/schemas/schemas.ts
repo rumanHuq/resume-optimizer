@@ -1,8 +1,12 @@
 import { getJobId } from '@/utils/utils';
 import { z } from 'zod';
 
+export const resumePdfSchema = z.object({
+  file: z.instanceof(File, { message: 'File is required' }).refine((f) => f.size > 0, 'File cannot be empty'),
+});
 export const linkedinJobUrlSchema = z.url().refine(
   (link) => {
+    if (typeof link !== 'string') return false;
     const jobId = getJobId(link);
     if (jobId === null || !/^\d+$/.test(jobId)) return false;
 
@@ -26,7 +30,7 @@ export const jobSuitabilitySchema = z.object({
   overallSuitabilityPercentage: z.number().min(0).max(100),
   overallSuitabilityReason: z.string(),
   matchingCriteria: z.array(MatchingCriterionSchema),
-  missingCriteria: z.array(z.string()),
+  missingCriteria: z.array(z.string().length(80)),
   atsCompatibilityPercentage: z.number().min(0).max(100),
   atsCompatibilityReason: z.string(),
   atsStrengths: z.array(z.string()),

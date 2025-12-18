@@ -15,7 +15,7 @@ Respond EXCLUSIVELY with valid JSON in this exact structure (no extra text, no m
   "overallSuitabilityReason": string, // 1-2 sentences
   "matchingCriteria": [
     {
-      "criterion": string, // key requirement from job
+      "criterion": string, // key requirement from job,
       "matchLevel": "Full" | "Partial" | "None",
       "evidenceFromCV": string // quote/summary or "Not mentioned"
     }
@@ -33,7 +33,6 @@ Be objective, evidence-based, and concise. Estimate percentages realistically:
 - ATS >80%: Excellent parsing + strong keyword match
 - ATS 60-80%: Good but some improvements needed
 - ATS <60%: Likely filtered out early
-- Candidates name should be used whenever appropriate
 - Do not prettify the JSON.
 - Do not add extra text outside the JSON.
 `;

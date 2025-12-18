@@ -9,7 +9,7 @@ import TurndownService from 'turndown';
 const ALLOWED_HOSTS = new Set(['www.linkedin.com', 'linkedin.com']);
 
 export function getJobId(link: string) {
-  console.log(JSON.stringify({ link }, null, 2));
+  if (link.length === 0) return null;
   const url = new URL(link);
 
   if (url.protocol !== 'https:') return null;
@@ -20,7 +20,8 @@ export function getJobId(link: string) {
 }
 
 function getLinkedInApiLink(link: string) {
-  const jobId = getJobId(link)!;
+  const jobId = getJobId(link);
+  if (typeof jobId !== 'string' || jobId.length === 0) return null;
   return `https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/${jobId}`;
 }
 
@@ -40,8 +41,11 @@ async function parseLinkedinJobPostToMarkdown(linkedInLink: string) {
 }
 
 export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
+  if (linkedInJobUrl.length === 0) return;
   const turndownService = new TurndownService();
   const linkedInAPILink = getLinkedInApiLink(linkedInJobUrl);
+  if (linkedInAPILink === null) return 'No html found';
+
   const linkedInJobPageHtml = await parseLinkedinJobPostToMarkdown(linkedInAPILink);
   if (linkedInJobPageHtml === null) return 'No html found';
 
