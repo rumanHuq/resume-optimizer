@@ -1,3 +1,4 @@
+import netlify from '@netlify/vite-plugin-tanstack-start';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
@@ -6,10 +7,10 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 
 export const isDev = process.env.NODE_ENV !== 'production';
 const developmentPlugins = () => [devtools()];
-const productionPlugins = () => [];
+const productionPlugins = () => [netlify()];
 
 const config = defineConfig({
-  server: { port: isDev ? 8080 : 80 },
+  server: { port: 8080 },
   plugins: [
     viteTsConfigPaths({ projects: ['./tsconfig.json'] }),
     tanstackStart(),
