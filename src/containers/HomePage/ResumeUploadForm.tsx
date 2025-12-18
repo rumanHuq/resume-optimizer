@@ -14,7 +14,6 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const form = useForm({
     defaultValues: { resumePDF: undefined as unknown as File, linkedJobUrl: '' },
-    validators: { onChange: resumeAnalyzerformSchema },
     onSubmit: async ({ value }) => {
       const { linkedJobUrl } = resumeAnalyzerformSchema.parse(value);
       await onSubmit({ linkedInUrl: linkedJobUrl });
@@ -105,7 +104,6 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
                     w={'100%'}
                     rightSection={<IconSparkles size={18} stroke={1.5} />}
                   >
-                    {`${canSubmit} ${isSubmitting}`}{' '}
                     {isSubmitting || isLoading ? 'Analyzing...' : 'Get ATS Score'}
                   </Button>
                 </Group>
