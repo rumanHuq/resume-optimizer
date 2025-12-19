@@ -1,22 +1,31 @@
+import type { AiModel } from '@/constants/constants';
+import { aiModels } from '@/constants/constants';
 import { cvAnalyzerformSchema, cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
-import { Button, FileInput, Group, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
+import { isDev } from '@/utils/utils';
+import { Button, FileInput, Group, Paper, Select, Stack, Text, TextInput, Title } from '@mantine/core';
 import { IconBrandLinkedin, IconFileCv, IconSparkles } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { onPdfRemove, onPdfUpload } from './utils';
 
 interface CvUploadFormProps {
-  onSubmit: (props: { linkedInUrl: string }) => void;
+  onSubmit: (props: { linkedInUrl: string; aiModel: string }) => void;
   isLoading: boolean;
 }
+
+const availableAImodels = isDev ? aiModels : aiModels.filter((m) => m !== 'qwen3:8b');
 
 export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const form = useForm({
-    defaultValues: { cvPDF: undefined as unknown as undefined | File, linkedJobUrl: '' },
-    onSubmit: async ({ value }) => {
-      const { linkedJobUrl } = cvAnalyzerformSchema.parse(value);
-      await onSubmit({ linkedInUrl: linkedJobUrl });
+    defaultValues: {
+      cvPDF: undefined as unknown as undefined | File,
+      linkedJobUrl: '',
+      aiModel: availableAImodels[0],
+    },
+    onSubmit: ({ value }) => {
+      const { linkedJobUrl, aiModel } = cvAnalyzerformSchema.parse(value);
+      void onSubmit({ aiModel, linkedInUrl: linkedJobUrl });
     },
   });
 
@@ -38,6 +47,22 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
           }}
         >
           <Stack gap='md'>
+            <form.Field
+              name='aiModel'
+              children={(field) => (
+                <Select
+                  label='Select LLM'
+                  placeholder='Pick a model'
+                  data={availableAImodels}
+                  value={field.state.value}
+                  disabled={isLoading}
+                  onChange={(val) => val !== null && field.handleChange(val as AiModel)}
+                  onBlur={field.handleBlur}
+                  comboboxProps={{ transitionProps: { transition: 'fade', duration: 100 } }}
+                  allowDeselect={false} // Ensures the user can't select "null"
+                />
+              )}
+            />
             {/* LinkedIn URL Field */}
             <form.Field
               name='linkedJobUrl'
@@ -99,7 +124,7 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
                     type='submit'
                     variant='gradient'
                     gradient={{ from: 'red', to: 'blue', deg: 90 }}
-                    disabled={!isFileUploaded || !canSubmit || form.state.isDefaultValue}
+                    disabled={!canSubmit || !isFileUploaded || isSubmitting || isLoading}
                     mt={16}
                     w={'100%'}
                     rightSection={<IconSparkles size={18} stroke={1.5} />}

@@ -1,4 +1,5 @@
-import { SYSTEM_PROMPT } from '@/constants/constants';
+import type { AiModel } from '@/constants/constants';
+import { SYSTEM_PROMPT, aiModels } from '@/constants/constants';
 import { jobSuitabilitySchema } from '@/schemas/schemas';
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamObject } from 'ai';
@@ -55,20 +56,14 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
 }
 
 export const isDev = process.env.NODE_ENV !== 'production';
-const models = [
-  'nvidia/nemotron-3-nano-30b-a3b:free',
-  'nex-agi/deepseek-v3.1-nex-n1:free',
-  'allenai/olmo-3.1-32b-think:free',
-  'mistralai/devstral-2512:free',
-  'qwen/qwen3-235b-a22b:free',
-];
+
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
 
-export const aiResponse = (linkedInJobPageMarkdown: string, cvMarkDown: string) => {
+export const aiResponse = (aiModel: AiModel, linkedInJobPageMarkdown: string, cvMarkDown: string) => {
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${cvMarkDown}.`;
   const resp = streamObject({
-    model: isDev ? ollama('qwen3:8b') : openrouter(models[0]),
+    model: aiModel === 'qwen3:8b' ? ollama('qwen3:8b') : openrouter(aiModel),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
@@ -78,7 +73,7 @@ Candidate CV: ${cvMarkDown}.`;
       console.log(event.error);
       new Response('Oh no');
     },
-    providerOptions: { gateway: { models } },
+    providerOptions: { gateway: { models: [...aiModels] } },
   });
 
   return resp.toTextStreamResponse();

@@ -1,3 +1,4 @@
+import { aiModels } from '@/constants/constants';
 import { getJobId } from '@/utils/utils';
 import { z } from 'zod';
 
@@ -18,6 +19,7 @@ export const linkedinJobUrlSchema = z.url().refine(
 export const cvAnalyzerformSchema = z.object({
   cvPDF: z.instanceof(File),
   linkedJobUrl: linkedinJobUrlSchema,
+  aiModel: z.enum(aiModels),
 });
 
 const MatchingCriterionSchema = z.object({
