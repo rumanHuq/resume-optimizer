@@ -12,8 +12,12 @@ export const Route = createFileRoute('/api/resume-optimizer')({
 
           const linkedInJobUrl = linkedinJobUrlSchema.parse(linkedInUrl);
           const linkedInJobPageMarkdown = await getLinkedInJobMarkDown(linkedInJobUrl);
-          if (linkedInJobPageMarkdown.length === 0 || db.resumeMarkDown.length === 0) {
-            return new Response('Done');
+          const linkedInPageMarkdownFail =
+            linkedInJobPageMarkdown === undefined ||
+            linkedInJobPageMarkdown.length === 0 ||
+            db.resumeMarkDown.length === 0;
+          if (linkedInPageMarkdownFail) {
+            return new Response('Linked In Job page markdown failed');
           }
           return aiResponse(linkedInJobPageMarkdown, db.resumeMarkDown);
         } catch (error) {

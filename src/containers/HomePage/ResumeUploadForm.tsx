@@ -25,7 +25,7 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
     <Paper shadow='sm' radius='md' p='xl' withBorder>
       <Stack gap='lg'>
         <div>
-          <Title order={3}>Resume Optimizer</Title>
+          <Title order={3}>CV Improv</Title>
           <Text c='dimmed' size='sm'>
             Upload your CV and the Job URL to get started.
           </Text>

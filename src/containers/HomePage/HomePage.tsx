@@ -9,7 +9,7 @@ export const HomePage = ({ env }: { env: string }) => {
     isLoading,
     object: resultData,
     submit,
-  } = useObject({ api: '/api/resume-optimizer', schema: jobSuitabilitySchema });
+  } = useObject({ api: '/api/cv-improv', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
   console.log(env);
   return (
