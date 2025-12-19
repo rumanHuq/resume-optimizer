@@ -1,7 +1,7 @@
 import { jobSuitabilitySchema } from '@/schemas/schemas';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { Container, Grid, Transition } from '@mantine/core';
-import { ResumeUploadForm } from './ResumeUploadForm';
+import { CvUploadForm } from './CvUploadForm';
 import { SuitabilityResult } from './SuitabilityResult';
 
 export const HomePage = ({ env }: { env: string }) => {
@@ -18,7 +18,7 @@ export const HomePage = ({ env }: { env: string }) => {
         {/* Left Column: Form */}
         {/* Moves to side (span 4) when streaming starts, otherwise centered (span 6) */}
         <Grid.Col span={{ base: 12, md: showResults ? 4 : 6 }} offset={{ md: showResults ? 0 : 3 }}>
-          <ResumeUploadForm onSubmit={submit} isLoading={isLoading} />
+          <CvUploadForm onSubmit={submit} isLoading={isLoading} />
         </Grid.Col>
 
         {showResults && (

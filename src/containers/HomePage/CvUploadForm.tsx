@@ -1,23 +1,22 @@
-import { linkedinJobUrlSchema, resumeAnalyzerformSchema, resumePdfSchema } from '@/schemas/schemas';
+import { cvAnalyzerformSchema, cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
 import { Button, FileInput, Group, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
 import { IconBrandLinkedin, IconFileCv, IconSparkles } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { onPdfRemove, onPdfUpload } from './utils';
 
-interface ResumeUploadFormProps {
+interface CvUploadFormProps {
   onSubmit: (props: { linkedInUrl: string }) => void;
   isLoading: boolean;
 }
 
-export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, isLoading }) => {
+export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const form = useForm({
-    defaultValues: { resumePDF: undefined as unknown as File, linkedJobUrl: '' },
+    defaultValues: { cvPDF: undefined as unknown as undefined | File, linkedJobUrl: '' },
     onSubmit: async ({ value }) => {
-      const { linkedJobUrl } = resumeAnalyzerformSchema.parse(value);
+      const { linkedJobUrl } = cvAnalyzerformSchema.parse(value);
       await onSubmit({ linkedInUrl: linkedJobUrl });
-      form.reset();
     },
   });
 
@@ -52,6 +51,7 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
                   onChange={(e) => {
                     field.handleChange(e.target.value);
                   }}
+                  disabled={isLoading}
                   onBlur={field.handleBlur}
                   error={
                     !field.state.meta.isValid && field.state.meta.errors.map((m) => m?.message).join(', ')
@@ -62,12 +62,12 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
 
             {/* File Upload Field */}
             <form.Field
-              name='resumePDF'
-              validators={{ onChange: resumePdfSchema.shape.file }}
+              name='cvPDF'
+              validators={{ onChange: cvPdfSchema.shape.file }}
               children={(field) => (
                 <FileInput
-                  label='Upload Resume (PDF)'
-                  placeholder='Select your resume'
+                  label='Upload CV (PDF)'
+                  placeholder='Select your CV'
                   leftSection={<IconFileCv size={16} />}
                   accept='application/pdf'
                   onChange={(file) => {
@@ -76,18 +76,18 @@ export const ResumeUploadForm: React.FC<ResumeUploadFormProps> = ({ onSubmit, is
                       void onPdfRemove();
                       return;
                     }
-
                     setIsFileUploaded(true);
                     field.handleChange(file);
                     const formData = new FormData();
-                    formData.append('resumePDF', file);
+                    formData.append('cvPDF', file);
                     void onPdfUpload({ data: formData });
                   }}
+                  disabled={isLoading}
                   onBlur={field.handleBlur}
                   error={
                     !field.state.meta.isValid && field.state.meta.errors.map((m) => m?.message).join(', ')
                   }
-                  clearable
+                  clearable={!isLoading}
                 />
               )}
             />

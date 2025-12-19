@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiResumeOptimizerRouteImport } from './routes/api/resume-optimizer'
+import { Route as ApiCvImprovRouteImport } from './routes/api/cv-improv'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiResumeOptimizerRoute = ApiResumeOptimizerRouteImport.update({
-  id: '/api/resume-optimizer',
-  path: '/api/resume-optimizer',
+const ApiCvImprovRoute = ApiCvImprovRouteImport.update({
+  id: '/api/cv-improv',
+  path: '/api/cv-improv',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/api/resume-optimizer': typeof ApiResumeOptimizerRoute
+  '/api/cv-improv': typeof ApiCvImprovRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/resume-optimizer': typeof ApiResumeOptimizerRoute
+  '/api/cv-improv': typeof ApiCvImprovRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/api/resume-optimizer': typeof ApiResumeOptimizerRoute
+  '/api/cv-improv': typeof ApiCvImprovRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/resume-optimizer'
+  fullPaths: '/' | '/api/cv-improv'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/resume-optimizer'
-  id: '__root__' | '/' | '/api/resume-optimizer'
+  to: '/' | '/api/cv-improv'
+  id: '__root__' | '/' | '/api/cv-improv'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApiResumeOptimizerRoute: typeof ApiResumeOptimizerRoute
+  ApiCvImprovRoute: typeof ApiCvImprovRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/resume-optimizer': {
-      id: '/api/resume-optimizer'
-      path: '/api/resume-optimizer'
-      fullPath: '/api/resume-optimizer'
-      preLoaderRoute: typeof ApiResumeOptimizerRouteImport
+    '/api/cv-improv': {
+      id: '/api/cv-improv'
+      path: '/api/cv-improv'
+      fullPath: '/api/cv-improv'
+      preLoaderRoute: typeof ApiCvImprovRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiResumeOptimizerRoute: ApiResumeOptimizerRoute,
+  ApiCvImprovRoute: ApiCvImprovRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -64,9 +64,9 @@ const models = [
 ];
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
 
-export const aiResponse = (linkedInJobPageMarkdown: string, resumeMarkDown: string) => {
+export const aiResponse = (linkedInJobPageMarkdown: string, cvMarkDown: string) => {
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
-Candidate CV: ${resumeMarkDown}.`;
+Candidate CV: ${cvMarkDown}.`;
   const resp = streamObject({
     model: isDev ? ollama('qwen3:8b') : openrouter(models[0]),
     schema: jobSuitabilitySchema,

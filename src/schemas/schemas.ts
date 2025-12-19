@@ -1,7 +1,7 @@
 import { getJobId } from '@/utils/utils';
 import { z } from 'zod';
 
-export const resumePdfSchema = z.object({
+export const cvPdfSchema = z.object({
   file: z.instanceof(File, { message: 'File is required' }).refine((f) => f.size > 0, 'File cannot be empty'),
 });
 export const linkedinJobUrlSchema = z.url().refine(
@@ -15,8 +15,8 @@ export const linkedinJobUrlSchema = z.url().refine(
   { message: 'Invalid LinkedIn job URL' },
 );
 
-export const resumeAnalyzerformSchema = z.object({
-  resumePDF: z.instanceof(File),
+export const cvAnalyzerformSchema = z.object({
+  cvPDF: z.instanceof(File),
   linkedJobUrl: linkedinJobUrlSchema,
 });
 
@@ -41,5 +41,5 @@ export const jobSuitabilitySchema = z.object({
 
 // Extract the TypeScript type from the schema
 export type LinkedinJobUrlSchema = z.infer<typeof linkedinJobUrlSchema>;
-export type ResumeAnalyzerformSchema = z.infer<typeof resumeAnalyzerformSchema>;
+export type CvAnalyzerformSchema = z.infer<typeof cvAnalyzerformSchema>;
 export type JobSuitabilitySchema = z.infer<typeof jobSuitabilitySchema>;

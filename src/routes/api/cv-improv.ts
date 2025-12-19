@@ -3,7 +3,7 @@ import { linkedinJobUrlSchema } from '@/schemas/schemas';
 import { aiResponse, getLinkedInJobMarkDown } from '@/utils/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/api/resume-optimizer')({
+export const Route = createFileRoute('/api/cv-improv')({
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -15,11 +15,11 @@ export const Route = createFileRoute('/api/resume-optimizer')({
           const linkedInPageMarkdownFail =
             linkedInJobPageMarkdown === undefined ||
             linkedInJobPageMarkdown.length === 0 ||
-            db.resumeMarkDown.length === 0;
+            db.cvMarkDown.length === 0;
           if (linkedInPageMarkdownFail) {
             return new Response('Linked In Job page markdown failed');
           }
-          return aiResponse(linkedInJobPageMarkdown, db.resumeMarkDown);
+          return aiResponse(linkedInJobPageMarkdown, db.cvMarkDown);
         } catch (error) {
           console.log(error);
           return new Response('Oh no');

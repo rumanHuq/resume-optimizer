@@ -1,1 +1,1 @@
-export const db = { resumeMarkDown: '' };
+export const db = { cvMarkDown: '' };
