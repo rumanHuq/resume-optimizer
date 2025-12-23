@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiMockErrorRouteImport } from './routes/api/mock-error'
 import { Route as ApiCvImprovRouteImport } from './routes/api/cv-improv'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMockErrorRoute = ApiMockErrorRouteImport.update({
+  id: '/api/mock-error',
+  path: '/api/mock-error',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCvImprovRoute = ApiCvImprovRouteImport.update({
@@ -26,27 +32,31 @@ const ApiCvImprovRoute = ApiCvImprovRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/cv-improv'
+  fullPaths: '/' | '/api/cv-improv' | '/api/mock-error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/cv-improv'
-  id: '__root__' | '/' | '/api/cv-improv'
+  to: '/' | '/api/cv-improv' | '/api/mock-error'
+  id: '__root__' | '/' | '/api/cv-improv' | '/api/mock-error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiCvImprovRoute: typeof ApiCvImprovRoute
+  ApiMockErrorRoute: typeof ApiMockErrorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mock-error': {
+      id: '/api/mock-error'
+      path: '/api/mock-error'
+      fullPath: '/api/mock-error'
+      preLoaderRoute: typeof ApiMockErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/cv-improv': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiCvImprovRoute: ApiCvImprovRoute,
+  ApiMockErrorRoute: ApiMockErrorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

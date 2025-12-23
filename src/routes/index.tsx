@@ -1,19 +1,21 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { HomePage } from '@/containers/HomePage/HomePage';
-import { createFileRoute } from '@tanstack/react-router';
-import { createServerFn } from '@tanstack/react-start';
+import type { ErrorComponentProps } from '@tanstack/react-router';
+import { ErrorComponent, createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
-export const getNodeEnv = createServerFn({ method: 'GET' }).handler(() => {
-  return process.env.NODE_ENV ?? 'test';
-});
-
-const HomePageWithInitialData = () => {
-  const env = Route.useLoaderData();
-  return <HomePage env={env} />;
+const PostError = ({ error }: ErrorComponentProps) => {
+  return <ErrorComponent error={error} />;
 };
 
-export const Route = createFileRoute('/')({
-  component: HomePageWithInitialData,
-  loader: async () => await getNodeEnv(),
-});
+// eslint-disable-next-line react/no-multi-comp
+const HomePageWithInitialData = () => {
+  useEffect(() => {
+    void fetch('/api/mock-error');
+  });
+
+  return <HomePage />;
+};
+
+export const Route = createFileRoute('/')({ component: HomePageWithInitialData, errorComponent: PostError });

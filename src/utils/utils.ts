@@ -56,14 +56,13 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
 }
 
 export const isDev = process.env.NODE_ENV !== 'production';
-
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
 
-export const aiResponse = (aiModel: AiModel, linkedInJobPageMarkdown: string, cvMarkDown: string) => {
+export function aiResponse(aiModel: AiModel, linkedInJobPageMarkdown: string, cvMarkDown: string) {
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${cvMarkDown}.`;
   const resp = streamObject({
-    model: aiModel === 'qwen3:8b' ? ollama('qwen3:8b') : openrouter(aiModel),
+    model: aiModel === 'deepseek-r1:8b' ? ollama('deepseek-r1:8b') : openrouter(aiModel),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
@@ -77,4 +76,4 @@ Candidate CV: ${cvMarkDown}.`;
   });
 
   return resp.toTextStreamResponse();
-};
+}

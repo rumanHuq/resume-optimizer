@@ -1,0 +1,27 @@
+@startuml
+autonumber
+
+actor User
+participant "Frontend (Vercel)" as FE
+participant "API Route (Node.js)" as BE
+participant "PDF Parser" as Parser
+participant "AI SDK (streamText)" as AI
+
+User -> FE: Select & Upload PDF
+FE -> BE: POST /api/upload (Multipart Form)
+
+activate BE
+BE -> Parser: Parse File Buffer
+Parser --> BE: Extracted Raw Text
+
+BE -> AI: streamText(extractedText + JSON Instructions)
+activate AI
+
+AI -->> BE: Stream Data Chunks (Partial JSON)
+BE -->> FE: streamText.toDataStreamResponse()
+deactivate AI
+
+FE -> User: Render JSON UI in Real-time
+deactivate BE
+
+@enduml

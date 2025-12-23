@@ -13,6 +13,7 @@ export const Route = createFileRoute('/api/cv-improv')({
         try {
           const { linkedInUrl, aiModel }: { linkedInUrl: string; aiModel: AiModel } = await request.json();
           z.enum(aiModels).parse(aiModel);
+
           const linkedInJobUrl = linkedinJobUrlSchema.parse(linkedInUrl);
           const linkedInJobPageMarkdown = await getLinkedInJobMarkDown(linkedInJobUrl);
           const linkedInPageMarkdownFail =

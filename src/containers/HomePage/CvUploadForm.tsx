@@ -13,7 +13,7 @@ interface CvUploadFormProps {
   isLoading: boolean;
 }
 
-const availableAImodels = isDev ? aiModels : aiModels.filter((m) => m !== 'qwen3:8b');
+const availableAImodels = isDev ? aiModels : aiModels.filter((m) => m !== 'deepseek-r1:8b');
 
 export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
@@ -124,7 +124,7 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
                     type='submit'
                     variant='gradient'
                     gradient={{ from: 'red', to: 'blue', deg: 90 }}
-                    disabled={!canSubmit || !isFileUploaded || isSubmitting || isLoading}
+                    disabled={!canSubmit || isSubmitting || isLoading || !isFileUploaded}
                     mt={16}
                     w={'100%'}
                     rightSection={<IconSparkles size={18} stroke={1.5} />}

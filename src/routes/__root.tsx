@@ -1,12 +1,20 @@
-import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
-import { TanStackDevtools } from '@tanstack/react-devtools';
-import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router';
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
+import { createRootRoute } from '@tanstack/react-router';
 
+import { Html } from '@/containers/Html';
+import { Provider } from '@/integrations/tanstack-query/root-provider';
 import '@mantine/core/styles.css';
+import { createServerFn } from '@tanstack/react-start';
+
+const getNodeEnv = createServerFn({ method: 'GET' }).handler(() => {
+  return process.env.NODE_ENV ?? 'test';
+});
+// eslint-disable-next-line react-refresh/only-export-components
+const RootComponent = () => {
+  return <Html env={Route.useLoaderData()} />;
+};
 
 export const Route = createRootRoute({
+  loader: async () => await getNodeEnv(),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -16,25 +24,9 @@ export const Route = createRootRoute({
   }),
   component: () => {
     return (
-      <html {...mantineHtmlProps}>
-        <head>
-          <HeadContent />
-          <ColorSchemeScript defaultColorScheme='auto' />
-        </head>
-        <body>
-          <MantineProvider>
-            <Outlet />
-          </MantineProvider>
-          <TanStackDevtools
-            config={{ position: 'bottom-right' }}
-            plugins={[
-              { name: 'Tanstack Router', render: <TanStackRouterDevtoolsPanel /> },
-              TanStackQueryDevtools,
-            ]}
-          />
-          <Scripts />
-        </body>
-      </html>
+      <Provider>
+        <RootComponent />
+      </Provider>
     );
   },
 });

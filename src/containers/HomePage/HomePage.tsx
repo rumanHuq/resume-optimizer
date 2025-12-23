@@ -4,14 +4,14 @@ import { Container, Grid, Transition } from '@mantine/core';
 import { CvUploadForm } from './CvUploadForm';
 import { SuitabilityResult } from './SuitabilityResult';
 
-export const HomePage = ({ env }: { env: string }) => {
+export const HomePage = () => {
   const {
     isLoading,
     object: resultData,
     submit,
   } = useObject({ api: '/api/cv-improv', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
-  console.log(env);
+
   return (
     <Container size='xl' py='xl'>
       <Grid gutter='xl'>
