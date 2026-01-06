@@ -1,195 +1,206 @@
 import type { JobSuitabilitySchema } from '@/schemas/schemas';
 import {
-  Badge,
   Blockquote,
+  Box,
   Divider,
-  Grid,
   Group,
   List,
   Paper,
   RingProgress,
+  SimpleGrid,
   Skeleton,
   Stack,
   Text,
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import { IconBulb, IconInfoCircle, IconUserSearch, IconX } from '@tabler/icons-react';
-import { uuid } from '@tanstack/react-form';
+import { IconBulb, IconCheck, IconInfoCircle, IconUserSearch, IconX } from '@tabler/icons-react';
 import type React from 'react';
 
 interface SuitabilityResultProps {
-  // Accepting Partial because streamObject returns partials initially
   data: Partial<JobSuitabilitySchema> | undefined | null;
 }
 
-// Helper to safely get color even if value is undefined during stream
-const getScoreColor = (score: number = 0) => {
+const getScoreColor = (score = 0) => {
   if (score >= 80) return 'teal';
   if (score >= 50) return 'yellow';
   return 'red';
 };
 
-const getMatchBadgeColor = (variant: string) => {
+const getMatchColor = (variant?: string) => {
   switch (variant) {
     case 'Full':
-      return 'green';
+      return 'teal.7';
     case 'Partial':
-      return 'yellow';
+      return 'yellow.8';
     default:
-      return 'gray';
+      return 'gray.6';
   }
 };
 
 export const SuitabilityResult: React.FC<SuitabilityResultProps> = ({ data }) => {
   if (!data) return null;
 
-  // Safe accessors for streaming data
   const overallScore = data.overallSuitabilityPercentage ?? 0;
   const atsScore = data.atsCompatibilityPercentage ?? 0;
-  const matchingCriteria = data.matchingCriteria ?? [];
-  const missingCriteria = data.missingCriteria ?? [];
-  const atsIssues = data.atsIssues ?? [];
 
   return (
     <Stack gap='md'>
       {/* 1. Score Cards */}
-      <Grid>
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Paper shadow='sm' radius='md' p='lg' withBorder>
-            <Group justify='center' gap='xl'>
-              <RingProgress
-                size={120}
-                roundCaps
-                thickness={12}
-                label={
-                  <Text size='xl' fw={700} ta='center'>
-                    {overallScore}%
-                  </Text>
-                }
-                sections={[{ value: overallScore, color: getScoreColor(overallScore) }]}
-              />
-              <div style={{ flex: 1 }}>
-                <Text size='lg' fw={600}>
-                  Overall Fit
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing='md'>
+        <Paper shadow='xs' radius='md' p='md' withBorder>
+          <Group wrap='nowrap' align='center'>
+            <RingProgress
+              size={80}
+              thickness={8}
+              roundCaps
+              label={
+                <Text ta='center' fw={700} size='sm'>
+                  {overallScore}%
                 </Text>
-                <Text size='sm' c='dimmed'>
-                  {data.overallSuitabilityReason ?? <Skeleton height={8} mt={6} width='80%' />}
-                </Text>
-              </div>
-            </Group>
-          </Paper>
-        </Grid.Col>
+              }
+              sections={[{ value: overallScore, color: getScoreColor(overallScore) }]}
+            />
+            <Box style={{ flex: 1 }}>
+              <Text size='xs' fw={700} tt='uppercase' c='dimmed'>
+                Overall Fit
+              </Text>
+              <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+                {data.overallSuitabilityReason ?? <Skeleton height={8} mt={6} width='100%' />}
+              </Text>
+            </Box>
+          </Group>
+        </Paper>
 
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Paper shadow='sm' radius='md' p='lg' withBorder>
-            <Group justify='center' gap='xl'>
-              <RingProgress
-                size={120}
-                roundCaps
-                thickness={12}
-                label={
-                  <Text size='xl' fw={700} ta='center'>
-                    {atsScore}%
-                  </Text>
-                }
-                sections={[{ value: atsScore, color: getScoreColor(atsScore) }]}
-              />
-              <div style={{ flex: 1 }}>
-                <Text size='lg' fw={600}>
-                  ATS Compatibility
+        <Paper shadow='xs' radius='md' p='md' withBorder>
+          <Group wrap='nowrap' align='center'>
+            <RingProgress
+              size={80}
+              thickness={8}
+              roundCaps
+              label={
+                <Text ta='center' fw={700} size='sm'>
+                  {atsScore}%
                 </Text>
-                <Text size='sm' c='dimmed'>
-                  {data.atsCompatibilityReason ?? <Skeleton height={8} mt={6} width='80%' />}
-                </Text>
-              </div>
-            </Group>
-          </Paper>
-        </Grid.Col>
-      </Grid>
+              }
+              sections={[{ value: atsScore, color: getScoreColor(atsScore) }]}
+            />
+            <Box style={{ flex: 1 }}>
+              <Text size='xs' fw={700} tt='uppercase' c='dimmed'>
+                ATS Match
+              </Text>
+              <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+                {data.atsCompatibilityReason ?? <Skeleton height={8} mt={6} width='100%' />}
+              </Text>
+            </Box>
+          </Group>
+        </Paper>
+      </SimpleGrid>
 
-      {/* 2. Criteria Breakdown */}
-      <Paper shadow='sm' radius='md' p='lg' withBorder>
-        <Title order={4} mb='md'>
+      {/* 2. Criteria Analysis */}
+      <Paper shadow='xs' radius='md' p='md' withBorder>
+        <Title order={5} mb='sm'>
           Matching Criteria
         </Title>
-        <Group gap='xs' mb='lg' mih={40}>
-          {matchingCriteria.length > 0 ? (
-            matchingCriteria.map((item) => (
-              <Badge key={uuid()} color={getMatchBadgeColor(item.matchLevel)} variant='light' size='lg'>
-                {item.criterion}
-              </Badge>
+        <List listStyleType='none' spacing='xs'>
+          {(data.matchingCriteria ?? []).length > 0 ? (
+            data.matchingCriteria?.map((item, idx) => (
+              <List.Item key={idx}>
+                <Group gap='xs' wrap='nowrap' align='center'>
+                  <ThemeIcon color={getMatchColor(item.matchLevel)} variant='light' size={18} radius='xl'>
+                    <IconCheck size={12} />
+                  </ThemeIcon>
+                  <Box>
+                    <Text size='sm' fw={500} style={{ overflowWrap: 'anywhere' }}>
+                      {item.criterion}
+                    </Text>
+                    <Text size='xs' c='dimmed'>
+                      {item.matchLevel} Match
+                    </Text>
+                  </Box>
+                </Group>
+              </List.Item>
             ))
           ) : (
-            <Text size='sm' c='dimmed'>
-              Analyzing criteria...
-            </Text>
+            <Skeleton height={40} width='100%' />
           )}
-        </Group>
+        </List>
 
-        <Divider my='md' label='Areas for Improvement' labelPosition='center' />
+        <Divider my='lg' label='Gap Analysis' labelPosition='center' />
 
-        <Grid>
-          <Grid.Col span={{ base: 12, sm: 6 }}>
-            <Text fw={600} mb='xs' c='red.7'>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing='lg'>
+          <Stack gap='xs'>
+            <Text fw={700} size='xs' c='red.7' tt='uppercase'>
               Missing Keywords
             </Text>
-            <List
-              spacing='xs'
-              size='sm'
-              center
-              icon={
-                <ThemeIcon color='red' size={16} radius='xl'>
-                  <IconX size={10} />
-                </ThemeIcon>
-              }
-            >
-              {missingCriteria.map((crit) => (
-                <List.Item key={uuid()}>{crit}</List.Item>
+            <List listStyleType='none' spacing='xs'>
+              {data.missingCriteria?.map((crit, i) => (
+                <List.Item key={i}>
+                  <Group gap='xs' wrap='nowrap' align='flex-start'>
+                    <IconX size={14} color='var(--mantine-color-red-6)' style={{ marginTop: 4 }} />
+                    <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+                      {crit}
+                    </Text>
+                  </Group>
+                </List.Item>
               ))}
             </List>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 6 }}>
-            <Text fw={600} mb='xs' c='orange.7'>
+          </Stack>
+
+          <Stack gap='xs'>
+            <Text fw={700} size='xs' c='orange.7' tt='uppercase'>
               ATS Issues
             </Text>
-            <List
-              spacing='xs'
-              size='sm'
-              center
-              icon={
-                <ThemeIcon color='orange' size={16} radius='xl'>
-                  <IconInfoCircle size={10} />
-                </ThemeIcon>
-              }
-            >
-              {atsIssues.map((issue) => (
-                <List.Item key={uuid()}>{issue}</List.Item>
+            <List listStyleType='none' spacing='xs'>
+              {data.atsIssues?.map((issue, i) => (
+                <List.Item key={i}>
+                  <Group gap='xs' wrap='nowrap' align='flex-start'>
+                    <IconInfoCircle
+                      size={14}
+                      color='var(--mantine-color-orange-6)'
+                      style={{ marginTop: 4 }}
+                    />
+                    <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+                      {issue}
+                    </Text>
+                  </Group>
+                </List.Item>
               ))}
             </List>
-          </Grid.Col>
-        </Grid>
+          </Stack>
+        </SimpleGrid>
       </Paper>
 
-      {/* 3. Actionable Pointers */}
-      <Grid>
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Blockquote color='blue' icon={<IconUserSearch size={20} />} mt='xl' radius='md'>
-            <Text fw={700} size='sm' mb={4}>
-              Recruiter&#39;s Perspective
-            </Text>
-            <Text size='sm'>{data.pointerForRecruiter ?? <Skeleton height={8} mt={6} width='90%' />}</Text>
-          </Blockquote>
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Blockquote color='teal' icon={<IconBulb size={20} />} mt='xl' radius='md'>
-            <Text fw={700} size='sm' mb={4}>
-              Advice for Candidate
-            </Text>
-            <Text size='sm'>{data.pointerForCandidate ?? <Skeleton height={8} mt={6} width='90%' />}</Text>
-          </Blockquote>
-        </Grid.Col>
-      </Grid>
+      {/* 3. Actionable Insights */}
+      <SimpleGrid cols={{ base: 1, sm: 2 }} spacing='md'>
+        <Blockquote
+          color='blue'
+          icon={<IconUserSearch size={22} />}
+          radius='md'
+          styles={{ icon: { alignSelf: 'flex-start' } }}
+        >
+          <Text fw={700} size='xs' tt='uppercase' mb={4} c='blue.8'>
+            Recruiter Insight
+          </Text>
+          <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+            {data.pointerForRecruiter ?? <Skeleton height={8} mt={6} />}
+          </Text>
+        </Blockquote>
+
+        <Blockquote
+          color='teal'
+          icon={<IconBulb size={22} />}
+          radius='md'
+          styles={{ icon: { alignSelf: 'flex-start' } }}
+        >
+          <Text fw={700} size='xs' tt='uppercase' mb={4} c='teal.8'>
+            Candidate Advice
+          </Text>
+          <Text size='sm' style={{ overflowWrap: 'anywhere' }}>
+            {data.pointerForCandidate ?? <Skeleton height={8} mt={6} />}
+          </Text>
+        </Blockquote>
+      </SimpleGrid>
     </Stack>
   );
 };

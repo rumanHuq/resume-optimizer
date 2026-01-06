@@ -6,11 +6,25 @@ import { SuitabilityResult } from './SuitabilityResult';
 
 export const HomePage = () => {
   const {
+    error,
     isLoading,
     object: resultData,
     submit,
   } = useObject({ api: '/api/cv-improv', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
+
+  if (error) {
+    return (
+      <Container size='xl' py='xl'>
+        <Grid justify='center'>
+          <Grid.Col span={6}>
+            <CvUploadForm onSubmit={submit} isLoading={isLoading} />
+            <div style={{ marginTop: '1rem', color: 'red', textAlign: 'center' }}>{error.message}</div>
+          </Grid.Col>
+        </Grid>
+      </Container>
+    );
+  }
 
   return (
     <Container size='xl' py='xl'>

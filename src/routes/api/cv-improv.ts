@@ -16,17 +16,19 @@ export const Route = createFileRoute('/api/cv-improv')({
 
           const linkedInJobUrl = linkedinJobUrlSchema.parse(linkedInUrl);
           const linkedInJobPageMarkdown = await getLinkedInJobMarkDown(linkedInJobUrl);
+          if (db.cvMarkDown.length === 0) {
+            return new Response('Please reupload the pdf and try again', { status: 500 });
+          }
           const linkedInPageMarkdownFail =
-            linkedInJobPageMarkdown === undefined ||
-            linkedInJobPageMarkdown.length === 0 ||
-            db.cvMarkDown.length === 0;
+            linkedInJobPageMarkdown === undefined || linkedInJobPageMarkdown.length === 0;
+
           if (linkedInPageMarkdownFail) {
-            return new Response('Linked In Job page markdown failed');
+            return new Response('Linked In Job page markdown failed', { status: 500 });
           }
           return aiResponse(aiModel, linkedInJobPageMarkdown, db.cvMarkDown);
         } catch (error) {
           console.log(error);
-          return new Response('Oh no');
+          return new Response('Oh no', { status: 500 });
         }
       },
     },

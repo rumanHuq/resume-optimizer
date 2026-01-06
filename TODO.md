@@ -6,9 +6,10 @@
 
 
 Q1, 2026 goals
-- landing a job
+- focus on shifting to AI engineering. I have exposure to tool-calling, vector indexing
+- landing a job with 9 years of experience in web development
 - snowboarding
-- learning to dance
+- learning to dance, shuffle at home to start. Then move to taking a course
 - record myself with tutorials, info about AI models and publish more
 - hybrid workout, focusing to improve aesthetics and vo2 max
 
@@ -19,5 +20,8 @@ predicaments
 - I am not meeting friends actively, how can incorporate there inputs, and make them part of my life
 
 What you can do
- - Help me create kanban style flows to visualize and plan?
- - Ask me questions dealing with each goal to plan rigidly
+ - Give next 7 days plan to kick off, so that I don't get stuck on analysis paralysis
+
+
+Draft out a 4 day PPL-hybrid workout split. I am doing PPL for the last 3 years, so I know the weighlifting part. Incorporating cardio is the challenge.
+I want to be better my vo2 max level
