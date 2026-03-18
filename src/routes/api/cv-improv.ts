@@ -2,7 +2,8 @@ import { db } from '@/api/db';
 import type { AiModel } from '@/constants/constants';
 import { aiModels } from '@/constants/constants';
 import { linkedinJobUrlSchema } from '@/schemas/schemas';
-import { aiResponse, getLinkedInJobMarkDown } from '@/utils/utils';
+import { aiResponse } from '@/utils/server-only-utils';
+import { getLinkedInJobMarkDown } from '@/utils/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 

@@ -1,23 +1,31 @@
-import type { AiModel } from '@/constants/constants';
-import { SYSTEM_PROMPT, aiModels } from '@/constants/constants';
-import { jobSuitabilitySchema } from '@/schemas/schemas';
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
-import { streamObject } from 'ai';
 import * as cheerio from 'cheerio';
-import { ollama } from 'ollama-ai-provider-v2';
 import TurndownService from 'turndown';
 
-const ALLOWED_HOSTS = new Set(['www.linkedin.com', 'linkedin.com']);
-
 export function getJobId(link: string) {
-  if (link.length === 0) return null;
-  const url = new URL(link);
+  try {
+    const parsedUrl = new URL(link);
 
-  if (url.protocol !== 'https:') return null;
-  if (!ALLOWED_HOSTS.has(url.hostname)) return null;
+    // Strict host check
+    if (!parsedUrl.hostname.endsWith('linkedin.com')) {
+      return null;
+    }
 
-  const jobId = url.searchParams.get('currentJobId');
-  return jobId;
+    // Case 1: jobId is in the query parameters (e.g., currentJobId=...)
+    const currentJobId = parsedUrl.searchParams.get('currentJobId');
+    if (currentJobId !== null) return currentJobId;
+
+    // Case 2: jobId is in the path (e.g., /jobs/view/4386729468/)
+    const pathSegments = parsedUrl.pathname.split('/');
+    const viewIndex = pathSegments.indexOf('view');
+
+    if (viewIndex !== -1 && pathSegments[viewIndex + 1].length > 0) {
+      return pathSegments[viewIndex + 1];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 function getLinkedInApiLink(link: string) {
@@ -53,27 +61,4 @@ export async function getLinkedInJobMarkDown(linkedInJobUrl: string) {
   const linkedInJobPageMarkdown: string = turndownService.turndown(linkedInJobPageHtml);
 
   return linkedInJobPageMarkdown;
-}
-
-export const isDev = process.env.NODE_ENV !== 'production';
-const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
-
-export function aiResponse(aiModel: AiModel, linkedInJobPageMarkdown: string, cvMarkDown: string) {
-  const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
-Candidate CV: ${cvMarkDown}.`;
-  const resp = streamObject({
-    model: aiModel === 'deepseek-r1:8b' ? ollama('deepseek-r1:8b') : openrouter(aiModel),
-    schema: jobSuitabilitySchema,
-    messages: [
-      { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: userPrompt },
-    ],
-    onError(event) {
-      console.log(event.error);
-      new Response('Oh no');
-    },
-    providerOptions: { gateway: { models: [...aiModels] } },
-  });
-
-  return resp.toTextStreamResponse();
 }

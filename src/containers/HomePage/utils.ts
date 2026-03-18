@@ -1,10 +1,7 @@
 import { db } from '@/api/db';
-import type { CvAnalyzerformSchema } from '@/schemas/schemas';
 import pdf2md from '@opendocsg/pdf2md';
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
-
-export const defaultFormValues: CvAnalyzerformSchema = { cvPDF: new File([], ''), linkedJobUrl: '' };
 
 export async function fileToBase64(file: File) {
   const arrayBuffer = await file.arrayBuffer();

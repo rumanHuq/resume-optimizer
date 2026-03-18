@@ -1,7 +1,7 @@
 import type { AiModel } from '@/constants/constants';
 import { aiModels } from '@/constants/constants';
 import { cvAnalyzerformSchema, cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
-import { isDev } from '@/utils/utils';
+import { isDev } from '@/utils/server-only-utils';
 import { Button, FileInput, Group, Paper, Select, Stack, Text, TextInput, Title } from '@mantine/core';
 import { IconBrandLinkedin, IconFileCv, IconSparkles } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
