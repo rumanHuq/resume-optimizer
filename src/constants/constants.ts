@@ -1,10 +1,9 @@
 export const aiModels = [
   'deepseek-r1:8b',
   'nvidia/nemotron-3-nano-30b-a3b:free',
-  'nex-agi/deepseek-v3.1-nex-n1:free',
-  'allenai/olmo-3.1-32b-think:free',
-  'mistralai/devstral-2512:free',
-  'qwen/qwen3-235b-a22b:free',
+  'openai/gpt-oss-120b:free',
+  'google/gemma-4-31b-it:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
 ] as const;
 export type AiModel = (typeof aiModels)[number];
 

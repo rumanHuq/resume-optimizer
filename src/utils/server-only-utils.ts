@@ -12,16 +12,13 @@ export const isDev = process.env.NODE_ENV !== 'production';
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
 
 async function writeLogFile(...args: Array<{ filename: string; data: string }>) {
-  if (!isDev) return;
-
   try {
     await rmdir(logsDir, { recursive: true });
     await mkdir(logsDir, { recursive: true });
-  } catch (error) {
-    console.log(error);
-  } finally {
     const promises = args.map(({ filename, data }) => Bun.write(`${logsDir}/${filename}`, data));
     await Promise.all(promises);
+  } catch (error) {
+    console.log(error);
   }
 }
 export function aiResponse(aiModel: AiModel, linkedInJobPageMarkdown: string, cvMarkDown: string) {
@@ -37,11 +34,9 @@ Candidate CV: ${cvMarkDown}.`;
     async onFinish({ object }) {
       // create a local file with response and cvMarkDown
       if (isDev) {
-        const now = Date.now();
         await writeLogFile(
-          { filename: `ast_score-${now}.json`, data: JSON.stringify(object, null, 2) },
-          { filename: `cvMarkDown-${now}.md`, data: cvMarkDown },
-          { filename: `linkedInJobPageMarkdown-${now}.md`, data: linkedInJobPageMarkdown },
+          { filename: `ast_score.json`, data: JSON.stringify(object, null, 2) },
+          { filename: `job_description.md`, data: linkedInJobPageMarkdown },
         );
       }
     },

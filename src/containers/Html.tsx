@@ -1,8 +1,8 @@
+import TanStackQueryDevtools from '@/integrations/tanstack-query/devtools';
 import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools';
 
 export const Html = ({ env }: { env: string }) => {
   console.log(JSON.stringify({ env }, null, 2));
