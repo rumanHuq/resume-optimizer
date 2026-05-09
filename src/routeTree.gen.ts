@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResumeBuilderRouteImport } from './routes/resume-builder'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiMockErrorRouteImport } from './routes/api/mock-error'
 import { Route as ApiCvImprovRouteImport } from './routes/api/cv-improv'
 
+const ResumeBuilderRoute = ResumeBuilderRouteImport.update({
+  id: '/resume-builder',
+  path: '/resume-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +37,52 @@ const ApiCvImprovRoute = ApiCvImprovRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/resume-builder': typeof ResumeBuilderRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/resume-builder': typeof ResumeBuilderRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/resume-builder': typeof ResumeBuilderRoute
   '/api/cv-improv': typeof ApiCvImprovRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/cv-improv' | '/api/mock-error'
+  fullPaths: '/' | '/resume-builder' | '/api/cv-improv' | '/api/mock-error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/cv-improv' | '/api/mock-error'
-  id: '__root__' | '/' | '/api/cv-improv' | '/api/mock-error'
+  to: '/' | '/resume-builder' | '/api/cv-improv' | '/api/mock-error'
+  id:
+    | '__root__'
+    | '/'
+    | '/resume-builder'
+    | '/api/cv-improv'
+    | '/api/mock-error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ResumeBuilderRoute: typeof ResumeBuilderRoute
   ApiCvImprovRoute: typeof ApiCvImprovRoute
   ApiMockErrorRoute: typeof ApiMockErrorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resume-builder': {
+      id: '/resume-builder'
+      path: '/resume-builder'
+      fullPath: '/resume-builder'
+      preLoaderRoute: typeof ResumeBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +109,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ResumeBuilderRoute: ResumeBuilderRoute,
   ApiCvImprovRoute: ApiCvImprovRoute,
   ApiMockErrorRoute: ApiMockErrorRoute,
 }
