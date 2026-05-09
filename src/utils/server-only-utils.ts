@@ -25,7 +25,10 @@ export function aiResponse(aiModel: AiModel, linkedInJobPageMarkdown: string, cv
   const userPrompt = `Job Advertisement: ${linkedInJobPageMarkdown}.
 Candidate CV: ${cvMarkDown}.`;
   const resp = streamObject({
-    model: aiModel === 'deepseek-r1:8b' ? ollama('deepseek-r1:8b') : openrouter(aiModel),
+    model:
+      aiModel === 'ministral-3:3b-instruct-2512-q4_K_M'
+        ? ollama('ministral-3:3b-instruct-2512-q4_K_M')
+        : openrouter(aiModel),
     schema: jobSuitabilitySchema,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

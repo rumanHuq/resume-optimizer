@@ -1,5 +1,5 @@
 export const aiModels = [
-  'deepseek-r1:8b',
+  'ministral-3:3b-instruct-2512-q4_K_M',
   'nvidia/nemotron-3-nano-30b-a3b:free',
   'openai/gpt-oss-120b:free',
   'google/gemma-4-31b-it:free',

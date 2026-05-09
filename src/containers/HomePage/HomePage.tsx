@@ -10,7 +10,7 @@ export const HomePage = () => {
     isLoading,
     object: resultData,
     submit,
-  } = useObject({ api: '/api/cv-improv', schema: jobSuitabilitySchema });
+  } = useObject({ api: '/api/ast-scorer', schema: jobSuitabilitySchema });
   const showResults = !!resultData && Object.keys(resultData).length > 0;
 
   if (error) {

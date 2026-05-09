@@ -13,7 +13,9 @@ interface CvUploadFormProps {
   isLoading: boolean;
 }
 
-const availableAImodels = isDev ? aiModels : aiModels.filter((m) => m !== 'deepseek-r1:8b');
+const availableAImodels = isDev
+  ? aiModels
+  : aiModels.filter((m) => m !== 'ministral-3:3b-instruct-2512-q4_K_M');
 
 export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
@@ -33,7 +35,7 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
     <Paper shadow='sm' radius='md' p='xl' withBorder>
       <Stack gap='lg'>
         <div>
-          <Title order={3}>CV Improv</Title>
+          <Title order={3}>AST Scorer</Title>
           <Text c='dimmed' size='sm'>
             Upload your CV and the Job URL to get started.
           </Text>
