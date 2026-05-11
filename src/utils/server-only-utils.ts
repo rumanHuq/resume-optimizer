@@ -1,4 +1,5 @@
 'use server';
+
 import type { AiModel } from '@/constants/constants';
 import { SYSTEM_PROMPT, aiModels } from '@/constants/constants';
 import { jobSuitabilitySchema } from '@/schemas/schemas';
@@ -6,9 +7,9 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamObject } from 'ai';
 import { mkdir, rmdir } from 'node:fs/promises';
 import { ollama } from 'ollama-ai-provider-v2';
+import { isDev } from './env-utils';
 
 const logsDir = 'logs';
-export const isDev = process.env.NODE_ENV !== 'production';
 const openrouter = createOpenRouter({ apiKey: process.env.OPEN_ROUTER_SDK_KEY });
 
 async function writeLogFile(...args: Array<{ filename: string; data: string }>) {

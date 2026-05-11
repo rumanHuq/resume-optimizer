@@ -7,7 +7,7 @@ import { getLinkedInJobMarkDown } from '@/utils/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-export const Route = createFileRoute('/api/cv-improv')({
+export const Route = createFileRoute('/api/ast-scorer')({
   server: {
     handlers: {
       POST: async ({ request }) => {

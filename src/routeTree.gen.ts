@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResumeBuilderRouteImport } from './routes/resume-builder'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiMockErrorRouteImport } from './routes/api/mock-error'
-import { Route as ApiCvImprovRouteImport } from './routes/api/cv-improv'
+import { Route as ApiAstScorerRouteImport } from './routes/api/ast-scorer'
 
 const ResumeBuilderRoute = ResumeBuilderRouteImport.update({
   id: '/resume-builder',
@@ -29,48 +29,48 @@ const ApiMockErrorRoute = ApiMockErrorRouteImport.update({
   path: '/api/mock-error',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiCvImprovRoute = ApiCvImprovRouteImport.update({
-  id: '/api/cv-improv',
-  path: '/api/cv-improv',
+const ApiAstScorerRoute = ApiAstScorerRouteImport.update({
+  id: '/api/ast-scorer',
+  path: '/api/ast-scorer',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
-  '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/ast-scorer': typeof ApiAstScorerRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
-  '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/ast-scorer': typeof ApiAstScorerRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
-  '/api/cv-improv': typeof ApiCvImprovRoute
+  '/api/ast-scorer': typeof ApiAstScorerRoute
   '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/resume-builder' | '/api/cv-improv' | '/api/mock-error'
+  fullPaths: '/' | '/resume-builder' | '/api/ast-scorer' | '/api/mock-error'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/resume-builder' | '/api/cv-improv' | '/api/mock-error'
+  to: '/' | '/resume-builder' | '/api/ast-scorer' | '/api/mock-error'
   id:
     | '__root__'
     | '/'
     | '/resume-builder'
-    | '/api/cv-improv'
+    | '/api/ast-scorer'
     | '/api/mock-error'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ResumeBuilderRoute: typeof ResumeBuilderRoute
-  ApiCvImprovRoute: typeof ApiCvImprovRoute
+  ApiAstScorerRoute: typeof ApiAstScorerRoute
   ApiMockErrorRoute: typeof ApiMockErrorRoute
 }
 
@@ -97,11 +97,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMockErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/cv-improv': {
-      id: '/api/cv-improv'
-      path: '/api/cv-improv'
-      fullPath: '/api/cv-improv'
-      preLoaderRoute: typeof ApiCvImprovRouteImport
+    '/api/ast-scorer': {
+      id: '/api/ast-scorer'
+      path: '/api/ast-scorer'
+      fullPath: '/api/ast-scorer'
+      preLoaderRoute: typeof ApiAstScorerRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -110,7 +110,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ResumeBuilderRoute: ResumeBuilderRoute,
-  ApiCvImprovRoute: ApiCvImprovRoute,
+  ApiAstScorerRoute: ApiAstScorerRoute,
   ApiMockErrorRoute: ApiMockErrorRoute,
 }
 export const routeTree = rootRouteImport
