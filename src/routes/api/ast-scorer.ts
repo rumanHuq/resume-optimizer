@@ -13,21 +13,38 @@ export const Route = createFileRoute('/api/ast-scorer')({
     handlers: {
       POST: async ({ request }) => {
         try {
-          const { linkedInUrl, aiModel }: { linkedInUrl: string; aiModel: AiModel } = await request.json();
+          const {
+            linkedInUrl,
+            jobDescription,
+            aiModel,
+          }: { linkedInUrl: string; jobDescription?: string; aiModel: AiModel } = await request.json();
           z.enum(aiModels).parse(aiModel);
 
-          const linkedInJobUrl = linkedinJobUrlSchema.parse(linkedInUrl);
-          const linkedInJobPageMarkdown = await getLinkedInJobMarkDown(linkedInJobUrl);
-          if (db.cvMarkDown.length === 0) {
-            return new Response('Please reupload the pdf and try again', { status: 500 });
+          const hasLinkedInUrl = linkedInUrl !== '';
+          const hasJobDescription = jobDescription !== undefined && jobDescription !== '';
+          if (hasLinkedInUrl === hasJobDescription) {
+            return new Response('Provide either LinkedIn URL or Job Description, not both', { status: 400 });
           }
-          const linkedInPageMarkdownFail =
-            linkedInJobPageMarkdown === undefined || linkedInJobPageMarkdown.length === 0;
 
-          if (linkedInPageMarkdownFail) {
-            return new Response('Linked In Job page markdown failed', { status: 500 });
+          let jobContent: string;
+          if (hasLinkedInUrl) {
+            const linkedInJobUrl = linkedinJobUrlSchema.parse(linkedInUrl);
+            const fetchedContent = await getLinkedInJobMarkDown(linkedInJobUrl);
+            if (db.cvMarkDown.length === 0) {
+              return new Response('Please reupload the pdf and try again', { status: 500 });
+            }
+            if (fetchedContent === undefined || fetchedContent === '') {
+              return new Response('Linked In Job page markdown failed', { status: 500 });
+            }
+            jobContent = fetchedContent;
+          } else {
+            const raw = jobDescription!.trim();
+            if (raw === '') {
+              return new Response('Job description is required', { status: 400 });
+            }
+            jobContent = raw.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, '');
           }
-          return aiResponse(aiModel, linkedInJobPageMarkdown, db.cvMarkDown);
+          return aiResponse(aiModel, jobContent, db.cvMarkDown);
         } catch (error) {
           console.log(error);
           return new Response('Oh no', { status: 500 });

@@ -1,5 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
-
 import { HomePage } from '@/containers/HomePage/HomePage';
 import type { ErrorComponentProps } from '@tanstack/react-router';
 import { ErrorComponent, createFileRoute } from '@tanstack/react-router';

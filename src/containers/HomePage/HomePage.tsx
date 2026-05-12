@@ -9,22 +9,30 @@ export const HomePage = () => {
     error,
     isLoading,
     object: resultData,
-    submit,
+    submit: submitToApi,
   } = useObject({ api: '/api/ast-scorer', schema: jobSuitabilitySchema });
-  const showResults = !!resultData && Object.keys(resultData).length > 0;
+  const showResults = resultData !== undefined && Object.keys(resultData).length > 0;
 
   if (error) {
     return (
       <Container size='xl' py='xl'>
         <Grid justify='center'>
           <Grid.Col span={6}>
-            <CvUploadForm onSubmit={submit} isLoading={isLoading} />
+            <CvUploadForm onSubmit={submitToApi} isLoading={isLoading} />
             <div style={{ marginTop: '1rem', color: 'red', textAlign: 'center' }}>{error.message}</div>
           </Grid.Col>
         </Grid>
       </Container>
     );
   }
+
+  const submit = (props: { linkedInUrl: string; jobDescription?: string; aiModel: string }) => {
+    submitToApi({
+      linkedInUrl: props.linkedInUrl,
+      ...(props.jobDescription !== '' && { jobDescription: props.jobDescription }),
+      aiModel: props.aiModel,
+    });
+  };
 
   return (
     <Container size='xl' py='xl'>

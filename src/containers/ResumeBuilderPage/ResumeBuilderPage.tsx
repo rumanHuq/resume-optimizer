@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import { useWindowDimensions } from '@/hooks/useWindowDimension';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Rnd } from 'react-rnd';
 
 // CareerCup / A4 Constants
@@ -10,19 +10,22 @@ const A4_RATIO = A4_BASE_WIDTH / A4_BASE_HEIGHT;
 
 export const ResumeBuilderPage = () => {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  // Initialize size and center the artboard
-  useEffect(() => {
-    if (windowHeight > 0 && size.height === 0) {
+  const [size, setSize] = useState(() => {
+    if (windowHeight > 0) {
       const initialHeight = windowHeight * 0.9;
       const initialWidth = initialHeight * A4_RATIO;
-
-      setSize({ width: initialWidth, height: initialHeight });
-      setPosition({ x: (windowWidth - initialWidth) / 2, y: (windowHeight - initialHeight) / 2 });
+      return { width: initialWidth, height: initialHeight };
     }
-  }, [windowHeight, windowWidth, size.height]);
+    return { width: 0, height: 0 };
+  });
+  const [position, setPosition] = useState(() => {
+    if (windowHeight > 0 && windowWidth > 0) {
+      const initialHeight = windowHeight * 0.9;
+      const initialWidth = initialHeight * A4_RATIO;
+      return { x: (windowWidth - initialWidth) / 2, y: (windowHeight - initialHeight) / 2 };
+    }
+    return { x: 0, y: 0 };
+  });
 
   if (size.height === 0) return null;
 
@@ -78,7 +81,14 @@ export const ResumeBuilderPage = () => {
   );
 };
 
-const EditableBlock = ({ text, style, scale, onCTA }: any) => {
+interface EditableBlockProps {
+  text: string;
+  style: React.CSSProperties;
+  scale: number;
+  onCTA: () => void;
+}
+
+const EditableBlock = ({ text, style, scale, onCTA }: EditableBlockProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   return (

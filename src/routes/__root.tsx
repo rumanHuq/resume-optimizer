@@ -8,7 +8,7 @@ import { createServerFn } from '@tanstack/react-start';
 const getNodeEnv = createServerFn({ method: 'GET' }).handler(() => {
   return process.env.NODE_ENV ?? 'test';
 });
-// eslint-disable-next-line react-refresh/only-export-components
+
 const RootComponent = () => {
   return <Html env={Route.useLoaderData()} />;
 };

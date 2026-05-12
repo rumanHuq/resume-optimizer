@@ -1,7 +1,12 @@
 {
   "include": [
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".netlify",
     "eslint.config.js",
     "prettier.config.js",
     "vite.config.js"

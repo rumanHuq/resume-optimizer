@@ -1,15 +1,28 @@
 import type { AiModel } from '@/constants/constants';
 import { aiModels } from '@/constants/constants';
-import { cvAnalyzerformSchema, cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
+import { cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
 import { isDev } from '@/utils/env-utils';
-import { Button, FileInput, Group, Paper, Select, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+  Button,
+  FileInput,
+  Group,
+  Modal,
+  Paper,
+  SegmentedControl,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Textarea,
+  Title,
+} from '@mantine/core';
 import { IconBrandLinkedin, IconFileCv, IconSparkles } from '@tabler/icons-react';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { onPdfRemove, onPdfUpload } from './utils';
 
 interface CvUploadFormProps {
-  onSubmit: (props: { linkedInUrl: string; aiModel: string }) => void;
+  onSubmit: (props: { linkedInUrl: string; jobDescription?: string; aiModel: string }) => void;
   isLoading: boolean;
 }
 
@@ -19,15 +32,43 @@ const availableAImodels = isDev
 
 export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
+  const [jobInputMode, setJobInputMode] = useState<'url' | 'description'>('url');
+  const [urlError, setUrlError] = useState('');
+  const [descError, setDescError] = useState('');
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [pendingMode, setPendingMode] = useState<'url' | 'description' | null>(null);
   const form = useForm({
     defaultValues: {
       cvPDF: undefined as unknown as undefined | File,
       linkedJobUrl: '',
+      jobDescription: '',
       aiModel: availableAImodels[0],
     },
     onSubmit: ({ value }) => {
-      const { linkedJobUrl, aiModel } = cvAnalyzerformSchema.parse(value);
-      void onSubmit({ aiModel, linkedInUrl: linkedJobUrl });
+      const { linkedJobUrl, jobDescription, aiModel } = value;
+      if (jobInputMode === 'url') {
+        if (linkedJobUrl === '') {
+          setUrlError('LinkedIn URL is required');
+          return;
+        }
+        try {
+          linkedinJobUrlSchema.parse(linkedJobUrl);
+        } catch {
+          setUrlError('Invalid LinkedIn job URL');
+          return;
+        }
+        setUrlError('');
+        setDescError('');
+        void onSubmit({ aiModel, linkedInUrl: linkedJobUrl });
+      } else {
+        if (jobDescription === '' || jobDescription.trim() === '') {
+          setDescError('Job description is required');
+          return;
+        }
+        setUrlError('');
+        setDescError('');
+        void onSubmit({ aiModel, linkedInUrl: '', jobDescription });
+      }
     },
   });
 
@@ -61,31 +102,83 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
                   onChange={(val) => val !== null && field.handleChange(val as AiModel)}
                   onBlur={field.handleBlur}
                   comboboxProps={{ transitionProps: { transition: 'fade', duration: 100 } }}
-                  allowDeselect={false} // Ensures the user can't select "null"
+                  allowDeselect={false}
                 />
               )}
             />
-            {/* LinkedIn URL Field */}
-            <form.Field
-              name='linkedJobUrl'
-              validators={{ onChange: linkedinJobUrlSchema }}
-              children={(field) => (
-                <TextInput
-                  label='LinkedIn Job URL'
-                  placeholder='https://www.linkedin.com/jobs/...'
-                  leftSection={<IconBrandLinkedin size={16} />}
-                  value={field.state.value}
-                  onChange={(e) => {
-                    field.handleChange(e.target.value);
-                  }}
-                  disabled={isLoading}
-                  onBlur={field.handleBlur}
-                  error={
-                    !field.state.meta.isValid && field.state.meta.errors.map((m) => m?.message).join(', ')
+            <div>
+              <Text size='sm' fw={500} mb={4}>
+                Job Source
+              </Text>
+              <SegmentedControl
+                value={jobInputMode}
+                onChange={(val) => {
+                  const newMode = val as 'url' | 'description';
+                  const hasLinkedInUrl = form.getFieldValue('linkedJobUrl').trim() !== '';
+                  const hasJobDescription = form.getFieldValue('jobDescription').trim() !== '';
+
+                  const willLoseContent =
+                    (jobInputMode === 'url' && newMode === 'description' && hasLinkedInUrl) ||
+                    (jobInputMode === 'description' && newMode === 'url' && hasJobDescription);
+
+                  if (willLoseContent) {
+                    setPendingMode(newMode);
+                    setConfirmModalOpen(true);
+                  } else {
+                    setJobInputMode(newMode);
+                    setUrlError('');
+                    setDescError('');
+                    if (newMode === 'url') form.setFieldValue('linkedJobUrl', '');
+                    else form.setFieldValue('jobDescription', '');
                   }
-                />
-              )}
-            />
+                }}
+                data={[
+                  { label: 'LinkedIn URL', value: 'url' },
+                  { label: 'Job Description', value: 'description' },
+                ]}
+                fullWidth
+                disabled={isLoading}
+              />
+            </div>
+            {jobInputMode === 'url' ? (
+              <form.Field
+                name='linkedJobUrl'
+                children={(field) => (
+                  <TextInput
+                    label='LinkedIn Job URL'
+                    placeholder='https://www.linkedin.com/jobs/...'
+                    leftSection={<IconBrandLinkedin size={16} />}
+                    value={field.state.value}
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                      setUrlError('');
+                    }}
+                    disabled={isLoading}
+                    onBlur={field.handleBlur}
+                    error={urlError}
+                  />
+                )}
+              />
+            ) : (
+              <form.Field
+                name='jobDescription'
+                children={(field) => (
+                  <Textarea
+                    label='Job Description'
+                    placeholder='Paste the job description here...'
+                    rows={6}
+                    value={field.state.value}
+                    onChange={(e) => {
+                      field.handleChange(e.target.value);
+                      setDescError('');
+                    }}
+                    disabled={isLoading}
+                    onBlur={field.handleBlur}
+                    error={descError}
+                  />
+                )}
+              />
+            )}
 
             {/* File Upload Field */}
             <form.Field
@@ -139,6 +232,40 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
           </Stack>
         </form>
       </Stack>
+
+      <Modal
+        opened={confirmModalOpen}
+        onClose={() => setConfirmModalOpen(false)}
+        title='Switch Job Source?'
+        centered
+        withCloseButton={false}
+      >
+        <Text mb='lg'>
+          {pendingMode === 'description'
+            ? 'Your LinkedIn URL will be cleared if you switch to Job Description.'
+            : 'Your Job Description will be cleared if you switch to LinkedIn URL.'}
+        </Text>
+        <Group justify='flex-end'>
+          <Button variant='default' onClick={() => setConfirmModalOpen(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              if (pendingMode !== null) {
+                setJobInputMode(pendingMode);
+                setUrlError('');
+                setDescError('');
+                if (pendingMode === 'url') form.setFieldValue('linkedJobUrl', '');
+                else form.setFieldValue('jobDescription', '');
+              }
+              setConfirmModalOpen(false);
+              setPendingMode(null);
+            }}
+          >
+            Confirm
+          </Button>
+        </Group>
+      </Modal>
     </Paper>
   );
 };
