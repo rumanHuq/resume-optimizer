@@ -58,7 +58,7 @@ JIRA with strict adherence to Agile principles.
 - Team Leadership: Contributed to sprint planning, trained junior developers, and enforced code quality standards.
 
 ---
-<br><br><br><br><br>
+<br>
 
 **Senior Software Engineer**
 : **The Qt Company**
@@ -114,18 +114,6 @@ automation tools, reducing onboarding time for new engineers.
 ## **About Me**
 [Revised text incorporating Warsaw relocation, Finnish citizenship/EU work eligibility, and relevant JD keywords]
 
-
-## **Skills**
-- **Languages:** [Revised list]
-- **Frontend Frameworks:** [Revised list]
-- **State Management & Data:** [Revised list]
-- **Backend, Databases & Cloud:** [Revised list]
-- **Security & Analytics:** [Revised list]
-- **Testing & Tooling:** [Revised list]
-- **Methodologies:** [Revised list]
-- **Additional Tools:** [Revised list]
-
-
 ## Experience
 
 **Senior Software Developer - Consultant**
@@ -154,7 +142,7 @@ automation tools, reducing onboarding time for new engineers.
 - [Revised bullet point]
 
 ---
-<br><br><br><br><br>
+<br>
 
 **Senior Software Engineer**
 : **The Qt Company**
@@ -184,6 +172,16 @@ automation tools, reducing onboarding time for new engineers.
 - [Revised bullet point]
 - [Revised bullet point]
 - [Revised bullet point]
+
+## **Skills**
+- **Languages:** [Revised list]
+- **Frontend Frameworks:** [Revised list]
+- **State Management & Data:** [Revised list]
+- **Backend, Databases & Cloud:** [Revised list]
+- **Security & Analytics:** [Revised list]
+- **Testing & Tooling:** [Revised list]
+- **Methodologies:** [Revised list]
+- **Additional Tools:** [Revised list]
 
 ## **Education**
 **BBA in Business Information Technology**

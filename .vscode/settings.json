@@ -1,13 +1,4 @@
 {
-  "files.watcherExclude": {
-    "**/routeTree.gen.ts": true
-  },
-  "search.exclude": {
-    "**/routeTree.gen.ts": true
-  },
-  "files.readonlyInclude": {
-    "**/routeTree.gen.ts": true
-  },
   "[typescript][typescriptreact][javascript]": {
     "editor.formatOnSave": false
   },
@@ -26,5 +17,14 @@
     "typescript",
     "typescriptreact"
   ],
-  "js/ts.tsdk.path": "node_modules/typescript/bin"
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "js/ts.tsdk.path": "node_modules/typescript/bin",
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  }
 }

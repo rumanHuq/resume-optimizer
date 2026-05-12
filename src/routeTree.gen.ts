@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResumeBuilderRouteImport } from './routes/resume-builder'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiMockErrorRouteImport } from './routes/api/mock-error'
 import { Route as ApiAstScorerRouteImport } from './routes/api/ast-scorer'
 
 const ResumeBuilderRoute = ResumeBuilderRouteImport.update({
@@ -24,11 +23,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiMockErrorRoute = ApiMockErrorRouteImport.update({
-  id: '/api/mock-error',
-  path: '/api/mock-error',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAstScorerRoute = ApiAstScorerRouteImport.update({
   id: '/api/ast-scorer',
   path: '/api/ast-scorer',
@@ -39,39 +33,30 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
   '/api/ast-scorer': typeof ApiAstScorerRoute
-  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
   '/api/ast-scorer': typeof ApiAstScorerRoute
-  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/resume-builder': typeof ResumeBuilderRoute
   '/api/ast-scorer': typeof ApiAstScorerRoute
-  '/api/mock-error': typeof ApiMockErrorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/resume-builder' | '/api/ast-scorer' | '/api/mock-error'
+  fullPaths: '/' | '/resume-builder' | '/api/ast-scorer'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/resume-builder' | '/api/ast-scorer' | '/api/mock-error'
-  id:
-    | '__root__'
-    | '/'
-    | '/resume-builder'
-    | '/api/ast-scorer'
-    | '/api/mock-error'
+  to: '/' | '/resume-builder' | '/api/ast-scorer'
+  id: '__root__' | '/' | '/resume-builder' | '/api/ast-scorer'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ResumeBuilderRoute: typeof ResumeBuilderRoute
   ApiAstScorerRoute: typeof ApiAstScorerRoute
-  ApiMockErrorRoute: typeof ApiMockErrorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -90,13 +75,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/mock-error': {
-      id: '/api/mock-error'
-      path: '/api/mock-error'
-      fullPath: '/api/mock-error'
-      preLoaderRoute: typeof ApiMockErrorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/ast-scorer': {
       id: '/api/ast-scorer'
       path: '/api/ast-scorer'
@@ -111,7 +89,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ResumeBuilderRoute: ResumeBuilderRoute,
   ApiAstScorerRoute: ApiAstScorerRoute,
-  ApiMockErrorRoute: ApiMockErrorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
