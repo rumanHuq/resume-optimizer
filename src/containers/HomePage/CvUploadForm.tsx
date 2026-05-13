@@ -1,4 +1,3 @@
-import type { AiModel } from '@/constants/constants';
 import { aiModels } from '@/constants/constants';
 import { cvPdfSchema, linkedinJobUrlSchema } from '@/schemas/schemas';
 import { isDev } from '@/utils/env-utils';
@@ -26,9 +25,8 @@ interface CvUploadFormProps {
   isLoading: boolean;
 }
 
-const availableAImodels = isDev
-  ? aiModels
-  : aiModels.filter((m) => m !== 'ministral-3:3b-instruct-2512-q4_K_M');
+const availableAImodels = isDev ? aiModels : (['nvidia/nemotron-3-nano-30b-a3b:free'] as const);
+const defaultAiModel = isDev ? aiModels[0] : 'nvidia/nemotron-3-nano-30b-a3b:free';
 
 export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading }) => {
   const [isFileUploaded, setIsFileUploaded] = useState(false);
@@ -42,7 +40,7 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
       cvPDF: undefined as unknown as undefined | File,
       linkedJobUrl: '',
       jobDescription: '',
-      aiModel: availableAImodels[0],
+      aiModel: defaultAiModel,
     },
     onSubmit: ({ value }) => {
       const { linkedJobUrl, jobDescription, aiModel } = value;
@@ -90,22 +88,24 @@ export const CvUploadForm: React.FC<CvUploadFormProps> = ({ onSubmit, isLoading 
           }}
         >
           <Stack gap='md'>
-            <form.Field
-              name='aiModel'
-              children={(field) => (
-                <Select
-                  label='Select LLM'
-                  placeholder='Pick a model'
-                  data={availableAImodels}
-                  value={field.state.value}
-                  disabled={isLoading}
-                  onChange={(val) => val !== null && field.handleChange(val as AiModel)}
-                  onBlur={field.handleBlur}
-                  comboboxProps={{ transitionProps: { transition: 'fade', duration: 100 } }}
-                  allowDeselect={false}
-                />
-              )}
-            />
+            {isDev && (
+              <form.Field
+                name='aiModel'
+                children={(field) => (
+                  <Select
+                    label='Select LLM'
+                    placeholder='Pick a model'
+                    data={availableAImodels}
+                    value={field.state.value}
+                    disabled={isLoading}
+                    onChange={(val) => val !== null && field.handleChange(val)}
+                    onBlur={field.handleBlur}
+                    comboboxProps={{ transitionProps: { transition: 'fade', duration: 100 } }}
+                    allowDeselect={false}
+                  />
+                )}
+              />
+            )}
             <div>
               <Text size='sm' fw={500} mb={4}>
                 Job Source

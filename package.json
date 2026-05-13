@@ -7,7 +7,7 @@
     "dev": "bun --bun vite dev",
     "build": "bun --bun vite build",
     "serve": "bun --bun vite preview",
-    "deploy": "bun build && bunx netlify deploy --prod"
+    "deploy": "bun run build && bunx netlify deploy --prod"
   },
   "keywords": [],
   "author": "",
