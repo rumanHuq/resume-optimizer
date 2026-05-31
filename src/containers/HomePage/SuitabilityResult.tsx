@@ -2,6 +2,7 @@ import type { JobSuitabilitySchema } from '@/schemas/schemas';
 import {
   Blockquote,
   Box,
+  Button,
   Divider,
   Group,
   List,
@@ -14,11 +15,20 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import { IconBulb, IconCheck, IconInfoCircle, IconUserSearch, IconX } from '@tabler/icons-react';
+import {
+  IconBulb,
+  IconCheck,
+  IconDownload,
+  IconFileDescription,
+  IconInfoCircle,
+  IconUserSearch,
+  IconX,
+} from '@tabler/icons-react';
 import type React from 'react';
 
 interface SuitabilityResultProps {
   data: Partial<JobSuitabilitySchema> | undefined | null;
+  jobDescription?: string;
 }
 
 const getScoreColor = (score = 0) => {
@@ -38,14 +48,57 @@ const getMatchColor = (variant?: string) => {
   }
 };
 
-export const SuitabilityResult: React.FC<SuitabilityResultProps> = ({ data }) => {
+function downloadFile(content: string, filename: string, mimeType: string) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+export const SuitabilityResult: React.FC<SuitabilityResultProps> = ({ data, jobDescription }) => {
   if (!data) return null;
 
   const overallScore = data.overallSuitabilityPercentage ?? 0;
   const atsScore = data.atsCompatibilityPercentage ?? 0;
 
+  const handleDownloadJson = () => {
+    downloadFile(JSON.stringify(data, null, 2), 'ast_score.json', 'application/json');
+  };
+
+  const handleDownloadJobDescription = () => {
+    if (jobDescription !== undefined && jobDescription !== '') {
+      downloadFile(jobDescription, 'job_description.md', 'text/markdown');
+    }
+  };
+
   return (
     <Stack gap='md'>
+      <Group gap='sm' justify='flex-end'>
+        <Button
+          size='xs'
+          variant='light'
+          color='blue'
+          leftSection={<IconDownload size={14} />}
+          onClick={handleDownloadJson}
+        >
+          Download JSON Report
+        </Button>
+        {jobDescription !== undefined && jobDescription !== '' && (
+          <Button
+            size='xs'
+            variant='light'
+            color='gray'
+            leftSection={<IconFileDescription size={14} />}
+            onClick={handleDownloadJobDescription}
+          >
+            Download Job Description
+          </Button>
+        )}
+      </Group>
+
       {/* 1. Score Cards */}
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing='md'>
         <Paper shadow='xs' radius='md' p='md' withBorder>

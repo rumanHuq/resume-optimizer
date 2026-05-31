@@ -5,7 +5,6 @@ import { HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 
 export const Html = ({ env }: { env: string }) => {
-  console.log(JSON.stringify({ env }, null, 2));
   return (
     <html {...mantineHtmlProps}>
       <head>

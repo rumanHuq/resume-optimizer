@@ -29,4 +29,7 @@ export const Route = createRootRoute({
       </Provider>
     );
   },
+  notFoundComponent: (props) => {
+    return <div>Oh shit, this does not look good</div>;
+  },
 });

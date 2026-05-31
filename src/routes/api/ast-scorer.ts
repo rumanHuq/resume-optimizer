@@ -44,7 +44,10 @@ export const Route = createFileRoute('/api/ast-scorer')({
             }
             jobContent = raw.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, '');
           }
-          return aiResponse(aiModel, jobContent, db.cvMarkDown);
+          const resp = aiResponse(aiModel, jobContent, db.cvMarkDown);
+          const headers = new Headers(resp.headers);
+          headers.set('X-Job-Description', btoa(encodeURIComponent(jobContent)));
+          return new Response(resp.body, { status: resp.status, statusText: resp.statusText, headers });
         } catch (error) {
           console.log(error);
           return new Response('Oh no', { status: 500 });

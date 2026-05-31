@@ -6,13 +6,6 @@ Act as a career coach. Keep the structure. Only focus on text content. Alter the
 - Do not bolden text content except where it's given
 - Do not update experience section if my base skills section does not match the job criteria
 
-**Input files:**
-* **AST Score:** `ast_score.json`
-* **Job Description:** `linkedInJobPageMarkdown.md`
-
-**Output:**
- updated-resume.md
-
 **Base Skills*
 ```md
 - **Languages:** TypeScript, JavaScript (ES6+), Rust, Go (Golang)
@@ -200,5 +193,11 @@ Lapland University of Applied Science
   : Jul 2023
 
 ```
+**Input files:**
+* **AST Score:** `ast_score.json`
+* **Job Description:** `linkedInJobPageMarkdown.md`
 
-*RAW* markdown as in .md
+**Output:**
+ - updated-resume.md
+ - Maximum content length should be within A4 page
+ - *RAW* markdown as in .md

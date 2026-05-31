@@ -1,16 +1,28 @@
 import { jobSuitabilitySchema } from '@/schemas/schemas';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { Container, Grid, Transition } from '@mantine/core';
+import { useState } from 'react';
 import { CvUploadForm } from './CvUploadForm';
 import { SuitabilityResult } from './SuitabilityResult';
 
 export const HomePage = () => {
+  const [jobDescription, setJobDescription] = useState('');
+
+  const customFetch: typeof fetch = async (input, init) => {
+    const response = await fetch(input, init);
+    const encoded = response.headers.get('X-Job-Description');
+    if (encoded !== null) {
+      setJobDescription(decodeURIComponent(atob(encoded)));
+    }
+    return response;
+  };
+
   const {
     error,
     isLoading,
     object: resultData,
     submit: submitToApi,
-  } = useObject({ api: '/api/ast-scorer', schema: jobSuitabilitySchema });
+  } = useObject({ api: '/api/ast-scorer', schema: jobSuitabilitySchema, fetch: customFetch });
   const showResults = resultData !== undefined && Object.keys(resultData).length > 0;
 
   if (error) {
@@ -49,7 +61,7 @@ export const HomePage = () => {
               {(styles) => (
                 <div style={styles}>
                   {/* @ts-expect-error */}
-                  <SuitabilityResult data={resultData} />
+                  <SuitabilityResult data={resultData} jobDescription={jobDescription} />
                 </div>
               )}
             </Transition>
